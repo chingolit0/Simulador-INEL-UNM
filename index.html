@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Transición Plan INEL</title>
+    <style>
+        /* Estilos básicos adaptados para celular */
+        body { font-family: Arial, sans-serif; margin: 15px; background-color: #f4f4f9; color: #333; }
+        h1 { font-size: 1.4rem; text-align: center; }
+        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .materia { margin-bottom: 15px; display: flex; align-items: center; }
+        .materia input { transform: scale(1.5); margin-right: 15px; } /* Checkbox más grande para tocar con el dedo */
+        .resultado { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        .aprobada { color: #28a745; font-weight: bold; }
+        .pendiente { color: #dc3545; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>Simulador INEL (2011 ➔ 2024)</h1>
+    
+    <!-- Sección Plan 2011 -->
+    <div class="card">
+        <h2>Mis materias (Plan 2011)</h2>
+        
+        <div class="materia">
+            <input type="checkbox" id="alg_geo" onchange="calcular()">
+            <label for="alg_geo">Álgebra y Geometría Analítica</label>
+        </div>
+        <div class="materia">
+            <input type="checkbox" id="am1" onchange="calcular()">
+            <label for="am1">Análisis Matemático I</label>
+        </div>
+        <div class="materia">
+            <input type="checkbox" id="fis1" onchange="calcular()">
+            <label for="fis1">Física I</label>
+        </div>
+    </div>
+
+    <!-- Sección Plan 2024 -->
+    <div class="card">
+        <h2>Equivalencias (Plan 2024)</h2>
+        
+        <div class="resultado">
+            <span>Matemática 1</span>
+            <span id="res_mate1" class="pendiente">Pendiente</span>
+        </div>
+        <div class="resultado">
+            <span>Física 1</span>
+            <span id="res_fis1" class="pendiente">Pendiente</span>
+        </div>
+    </div>
+
+    <script>
+        // Lógica de programación (muy similar a C)
+        function calcular() {
+            // 1. Leer qué checkboxes están tildados (true o false)
+            let alg_geo = document.getElementById('alg_geo').checked;
+            let am1 = document.getElementById('am1').checked;
+            let fis1 = document.getElementById('fis1').checked;
+
+            // 2. Lógica de equivalencias según tu Excel
+            // Matemática 1 se aprueba con Álgebra O Análisis Matemático 1
+            let mate1 = alg_geo || am1; 
+            
+            // Física 1 se aprueba con Física 1
+            let fisica1 = fis1;
+
+            // 3. Actualizar la pantalla
+            actualizarInterfaz('res_mate1', mate1);
+            actualizarInterfaz('res_fis1', fisica1);
+        }
+
+        // Función auxiliar para cambiar colores y textos
+        function actualizarInterfaz(idElemento, estaAprobada) {
+            let elemento = document.getElementById(idElemento);
+            if (estaAprobada) {
+                elemento.textContent = "Aprobada";
+                elemento.className = "aprobada";
+            } else {
+                elemento.textContent = "Pendiente";
+                elemento.className = "pendiente";
+            }
+        }
+    </script>
+</body>
+</html>
