@@ -3,84 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Transición Plan INEL</title>
+    <title>Simulador Transición Plan INEL (Completo)</title>
     <style>
-        /* Estilos básicos adaptados para celular */
-        body { font-family: Arial, sans-serif; margin: 15px; background-color: #f4f4f9; color: #333; }
-        h1 { font-size: 1.4rem; text-align: center; }
-        .card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .materia { margin-bottom: 15px; display: flex; align-items: center; }
-        .materia input { transform: scale(1.5); margin-right: 15px; } /* Checkbox más grande para tocar con el dedo */
-        .resultado { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
-        .aprobada { color: #28a745; font-weight: bold; }
-        .pendiente { color: #dc3545; font-weight: bold; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; background-color: #f0f2f5; color: #333; }
+        h1 { font-size: 1.5rem; text-align: center; color: #0056b3; margin-bottom: 20px; }
+        .container { display: flex; flex-direction: column; gap: 20px; }
+        @media(min-width: 768px) { .container { flex-direction: row; } .card { flex: 1; } }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card h2 { font-size: 1.2rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; color: #0056b3; }
+        
+        .materia { margin-bottom: 12px; display: flex; align-items: center; font-size: 0.9rem; }
+        .materia input[type="checkbox"] { transform: scale(1.4); margin-right: 12px; cursor: pointer; }
+        
+        .resultado { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.9rem; }
+        .resultado:last-child { border-bottom: none; }
+        .aprobada { color: #198754; font-weight: bold; background-color: #d1e7dd; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .pendiente { color: #dc3545; font-weight: bold; background-color: #f8d7da; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <h1>Simulador INEL (2011 ➔ 2024)</h1>
+    <h1>Simulador Equivalencias INEL (2011 ➔ 2024)</h1>
     
-    <!-- Sección Plan 2011 -->
-    <div class="card">
-        <h2>Mis materias (Plan 2011)</h2>
-        
-        <div class="materia">
-            <input type="checkbox" id="alg_geo" onchange="calcular()">
-            <label for="alg_geo">Álgebra y Geometría Analítica</label>
+    <div class="container">
+        <!-- PLAN 2011 -->
+        <div class="card">
+            <h2>Mi Historia Académica (Plan 2011)</h2>
+            <div id="materias-2011">
+                <!-- Se generan dinámicamente con JS -->
+            </div>
         </div>
-        <div class="materia">
-            <input type="checkbox" id="am1" onchange="calcular()">
-            <label for="am1">Análisis Matemático I</label>
-        </div>
-        <div class="materia">
-            <input type="checkbox" id="fis1" onchange="calcular()">
-            <label for="fis1">Física I</label>
-        </div>
-    </div>
 
-    <!-- Sección Plan 2024 -->
-    <div class="card">
-        <h2>Equivalencias (Plan 2024)</h2>
-        
-        <div class="resultado">
-            <span>Matemática 1</span>
-            <span id="res_mate1" class="pendiente">Pendiente</span>
-        </div>
-        <div class="resultado">
-            <span>Física 1</span>
-            <span id="res_fis1" class="pendiente">Pendiente</span>
+        <!-- PLAN 2024 -->
+        <div class="card">
+            <h2>Equivalencias (Plan 2024)</h2>
+            <div id="materias-2024">
+                <!-- Se generan dinámicamente con JS -->
+            </div>
         </div>
     </div>
 
     <script>
-        // Lógica de programación (muy similar a C)
+        // 1. DICCIONARIO DE MATERIAS PLAN 2011
+        const materias2011 = [
+            { id: "alg", nombre: "Álgebra y Geometría Analítica" },
+            { id: "am1", nombre: "Análisis Matemático I" },
+            { id: "fis1", nombre: "Física I" },
+            { id: "qca", nombre: "Química General" },
+            { id: "inf1", nombre: "Informática I" },
+            { id: "ing1", nombre: "Inglés Técnico I" },
+            { id: "am2", nombre: "Análisis Matemático II" },
+            { id: "fis2", nombre: "Física II" },
+            { id: "td1", nombre: "Técnicas Digitales I" },
+            { id: "disp", nombre: "Dispositivos Electrónicos" },
+            { id: "inf2", nombre: "Informática II" },
+            { id: "ing2", nombre: "Inglés Técnico II" },
+            { id: "prob", nombre: "Probabilidad y Estadística" },
+            { id: "senales", nombre: "Análisis de Señales y Sistemas" },
+            { id: "tc1", nombre: "Teoría de los Circuitos I" },
+            { id: "ea1", nombre: "Electrónica Aplicada I" },
+            { id: "td2", nombre: "Técnicas Digitales II" },
+            { id: "inst", nombre: "Instrumentos y Mediciones" },
+            { id: "dib", nombre: "Dibujo Asistido por Pc" },
+            { id: "tc2", nombre: "Teoría de los Circuitos II" },
+            { id: "ea2", nombre: "Electrónica Aplicada II" },
+            { id: "medios", nombre: "Medios de Enlace" },
+            { id: "sociedad", nombre: "Ingeniería y Sociedad" },
+            { id: "control", nombre: "Sistemas de Control" },
+            { id: "proyecto", nombre: "Taller de Proyecto" },
+            { id: "seguridad", nombre: "Seguridad, Higiene y M. Ambiente" },
+            { id: "economia", nombre: "Economía, Planificación y Gestión" },
+            { id: "legis", nombre: "Legislación y Ejercicio Prof." },
+            { id: "pps", nombre: "Práctica Pre-profesional Supervisada" },
+            { id: "redes_ia", nombre: "Redes IA" },
+            { id: "redes_ib", nombre: "Redes IB" },
+            { id: "redes_iia", nombre: "Redes IIA" },
+            { id: "entornos", nombre: "Entornos C y Java" },
+            { id: "comu1", nombre: "Sistemas de Comunicaciones I" },
+            { id: "comu3", nombre: "Sistemas de Comunicación III" },
+            { id: "dsp", nombre: "Tratamiento Digital de Señales" }
+        ];
+
+        // DIBUJAR INPUTS DEL PLAN 2011
+        const contenedor2011 = document.getElementById('materias-2011');
+        materias2011.forEach(mat => {
+            contenedor2011.innerHTML += `
+                <div class="materia">
+                    <input type="checkbox" id="${mat.id}" onchange="calcular()">
+                    <label for="${mat.id}">${mat.nombre}</label>
+                </div>
+            `;
+        });
+
+        // 2. DICCIONARIO MATERIAS PLAN 2024
+        const materias2024 = [
+            { id: "m_mate1", nombre: "Matemática 1" },
+            { id: "m_fis1", nombre: "Física 1" },
+            { id: "m_intro", nombre: "Introducción a la Ing. Electrónica" },
+            { id: "m_inf1", nombre: "Informática 1" },
+            { id: "m_ing1", nombre: "Inglés técnico 1" },
+            { id: "m_mate2a", nombre: "Matemática 2a" },
+            { id: "m_mate2b", nombre: "Matemática 2b" },
+            { id: "m_fis2", nombre: "Física 2" },
+            { id: "m_td1", nombre: "Técnicas digitales 1" },
+            { id: "m_ing2", nombre: "Inglés técnico 2" },
+            { id: "m_mate3", nombre: "Matemática 3" },
+            { id: "m_fis3", nombre: "Física 3" },
+            { id: "m_inf2", nombre: "Informática 2" },
+            { id: "m_semi", nombre: "Dispositivos semiconductores" },
+            { id: "m_qca", nombre: "Química General e Inorgánica" },
+            { id: "m_mate4", nombre: "Matemática 4" },
+            { id: "m_senales", nombre: "Señales y sistemas" },
+            { id: "m_tc1", nombre: "Teoría de circuitos 1" },
+            { id: "m_ea1", nombre: "Electrónica aplicada 1" },
+            { id: "m_td2", nombre: "Técnicas digitales 2" },
+            { id: "m_soc", nombre: "Ingeniería y sociedad" },
+            { id: "m_prob", nombre: "Probabilidad, estad. y proc. estocásticos" },
+            { id: "m_tc2", nombre: "Teoría de circuitos 2" },
+            { id: "m_ea2", nombre: "Electrónica aplicada 2" },
+            { id: "m_electro", nombre: "Electromagnetismo aplicado" },
+            { id: "m_dib", nombre: "Dibujo asistido por PC" },
+            { id: "m_ea3", nombre: "Electrónica aplicada 3" },
+            { id: "m_td3", nombre: "Técnicas digitales 3" },
+            { id: "m_comu_dig", nombre: "Principios de Com. Digitales" },
+            { id: "m_redes", nombre: "Redes de datos" },
+            { id: "m_datos", nombre: "Análisis de datos" },
+            { id: "m_inst", nombre: "Inst. y Mediciones Electrónicas" },
+            { id: "m_comu", nombre: "Sistemas de comunicaciones" },
+            { id: "m_control", nombre: "Sistemas de control" },
+            { id: "m_fis_elec", nombre: "Física electrónica" },
+            { id: "m_web", nombre: "Diseño de Aplicaciones Web" },
+            { id: "m_pds", nombre: "Procesamiento digital de señales" },
+            { id: "m_auto", nombre: "Sistemas de automatización" },
+            { id: "m_pps", nombre: "Práctica Profesional Supervisada" },
+            { id: "m_tfg", nombre: "Trabajo Final de Grado" },
+            { id: "m_tp", nombre: "Taller de proyectos" },
+            { id: "m_eco", nombre: "Economía, planificación y gestión" },
+            { id: "m_seg", nombre: "Seguridad, higiene y medio ambiente" },
+            { id: "m_legis", nombre: "Legislación y Ejercicio profesional" }
+        ];
+
+        // DIBUJAR OUTPUTS DEL PLAN 2024
+        const contenedor2024 = document.getElementById('materias-2024');
+        materias2024.forEach(mat => {
+            contenedor2024.innerHTML += `
+                <div class="resultado">
+                    <span>${mat.nombre}</span>
+                    <span id="${mat.id}" class="pendiente">Pendiente</span>
+                </div>
+            `;
+        });
+
+        // 3. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
-            // 1. Leer qué checkboxes están tildados (true o false)
-            let alg_geo = document.getElementById('alg_geo').checked;
-            let am1 = document.getElementById('am1').checked;
-            let fis1 = document.getElementById('fis1').checked;
+            // Función auxiliar para saber si un checkbox está tildado
+            const val = (id) => document.getElementById(id).checked;
 
-            // 2. Lógica de equivalencias según tu Excel
-            // Matemática 1 se aprueba con Álgebra O Análisis Matemático 1
-            let mate1 = alg_geo || am1; 
-            
-            // Física 1 se aprueba con Física 1
-            let fisica1 = fis1;
+            // REGLAS DE EQUIVALENCIA SEGÚN EXCEL
+            let resultados = {
+                "m_mate1": val('alg') || val('am1'),
+                "m_fis1": val('fis1'),
+                "m_intro": val('fis2'),
+                "m_inf1": val('inf1'),
+                "m_ing1": val('ing1'),
+                "m_mate2a": val('alg') && val('am1'),
+                "m_mate2b": val('am2'),
+                "m_fis2": val('fis1'),
+                "m_td1": val('td1'),
+                "m_ing2": val('ing2'),
+                "m_mate3": val('am2'),
+                "m_fis3": val('fis2'),
+                "m_inf2": val('inf2'),
+                "m_semi": val('disp'),
+                "m_qca": val('qca'),
+                "m_mate4": val('am2'),
+                "m_senales": val('senales'),
+                "m_tc1": val('tc1'),
+                "m_ea1": val('ea1'),
+                "m_td2": val('td2'),
+                "m_soc": val('sociedad'),
+                "m_prob": val('prob'),
+                "m_tc2": val('tc1') && val('tc2'),
+                "m_ea2": val('ea2'),
+                "m_electro": val('medios'),
+                "m_dib": val('dib'),
+                "m_ea3": val('ea2'),
+                "m_td3": val('td2'),
+                "m_comu_dig": val('comu1'),
+                "m_redes": val('redes_ia') && val('redes_ib') && val('redes_iia'),
+                "m_datos": val('entornos'),
+                "m_inst": val('inst'),
+                "m_comu": val('comu3'),
+                "m_control": val('control'),
+                "m_fis_elec": val('fis2'),
+                "m_web": val('entornos'),
+                "m_pds": val('dsp'),
+                "m_auto": val('control'),
+                "m_pps": val('pps'),
+                "m_tfg": val('proyecto'),
+                "m_tp": val('proyecto'),
+                "m_eco": val('economia'),
+                "m_seg": val('seguridad'),
+                "m_legis": val('legis')
+            };
 
-            // 3. Actualizar la pantalla
-            actualizarInterfaz('res_mate1', mate1);
-            actualizarInterfaz('res_fis1', fisica1);
-        }
-
-        // Función auxiliar para cambiar colores y textos
-        function actualizarInterfaz(idElemento, estaAprobada) {
-            let elemento = document.getElementById(idElemento);
-            if (estaAprobada) {
-                elemento.textContent = "Aprobada";
-                elemento.className = "aprobada";
-            } else {
-                elemento.textContent = "Pendiente";
-                elemento.className = "pendiente";
+            // ACTUALIZAR INTERFAZ
+            for (let id in resultados) {
+                let elemento = document.getElementById(id);
+                if (resultados[id]) {
+                    elemento.textContent = "Aprobada";
+                    elemento.className = "aprobada";
+                } else {
+                    elemento.textContent = "Pendiente";
+                    elemento.className = "pendiente";
+                }
             }
         }
     </script>
