@@ -491,7 +491,15 @@
                 }
             }
             }
-        }
+        // Reposicionar flechas si el usuario hace scroll horizontal en el mapa
+            document.querySelector('.mapa-container').addEventListener('scroll', () => {
+                lineasLeader.forEach(linea => linea.position());
+            });
+        } // Acá cierra la función calcular()
+
+        // Ejecutar una vez al inicio para que se dibujen las flechas grises
+        calcular();
+        
     </script>
 </body>
 </html>
