@@ -263,7 +263,10 @@
         // 3. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
             // Función auxiliar para saber si un checkbox está tildado
-            const val = (id) => document.getElementById(id).checked;
+            const val = (id) => {
+                let elemento = document.getElementById(id);
+                return elemento ? elemento.checked : false;
+            };
 
             // REGLAS DE EQUIVALENCIA SEGÚN EXCEL
             let resultados = {
@@ -308,7 +311,7 @@
                 "200416": val('2071RM'),
                 "200417": val('2051'),
                 // ELECTIVA 2
-                "200402": (val('2017R') && (val('2028R')) || ((val('2017M') && val('2028M')) || ((val('2017A') &&  val('2028A')),
+                "200402": (val('2017R') && val('2028R')) || (val('2017M') && val('2028M')) || (val('2017A') && val('2028A')),
                 // ELECTIVA 3
                 "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') &&  val('2028A') && val('2037A')),
                 "200510": val('2052'),
