@@ -30,8 +30,9 @@
         /* Colores dinámicos para las cajitas */
         .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
         .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
-        
     </style>
+    /Agrego flechas
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
 </head>
 <body>
 
@@ -337,12 +338,75 @@
             `;
         });
 
+        // MAPA DE CORRELATIVIDADES (Flechas)
+        const flechasData = [
+            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, // Mate 1 -> Mate 2a, 2b
+            { from: '200111', to: '200117' }, // Física 1 -> Física 2
+            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, // Intro + Info 1 -> TD1
+            { from: '200114', to: '200119' }, // Inglés 1 -> Inglés 2
+            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, // Mate 2a + 2b -> Mate 3
+            { from: '200116', to: '200211' }, { from: '200117', to: '200211' }, // Mate 2b + Fís 2 -> Fís 3
+            { from: '200113', to: '200212' }, // Info 1 -> Info 2
+            { from: '200112', to: '200213' }, // Intro -> Disp Semi
+            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, // Mate 3 -> Mate 4, Señales
+            { from: '200112', to: '200217' }, { from: '200111', to: '200217' }, // Intro + Fís 1 -> TC1
+            { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, // Fís 3 + Disp Semi -> EA1
+            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, // TD1 + Info 2 -> TD2
+            { from: '200215', to: '200310' }, { from: '200216', to: '200310' }, // Mate 4 + Señales -> Probabilidad
+            { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, // Señales + TC1 -> TC2
+            { from: '200218', to: '200312' }, // EA1 -> EA2
+            { from: '200211', to: '200313' }, // Fís 3 -> Electromagnetismo
+            { from: '200312', to: '200315' }, { from: '200311', to: '200315' }, // EA2 + TC2 -> Diseño
+            { from: '200219', to: '200316' }, // TD2 -> TD3
+            { from: '200313', to: '200317' }, { from: '200310', to: '200317' }, // E.Mag + Prob -> Com Dig
+            { from: '200219', to: '200318' }, // TD2 -> Redes
+            { from: '200217', to: '200319' }, { from: '200218', to: '200319' }, // TC1 + EA1 -> Potencia
+            { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, // Prob + Info 2 -> Datos
+            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, // TC2 + EA2 -> Inst. Med
+            { from: '200317', to: '200412' }, { from: '200318', to: '200412' }, // Com Dig + Redes -> Sis Com
+            { from: '200319', to: '200413' }, // Potencia -> Control
+            { from: '200211', to: '200414' }, // Fís 3 -> Fís Electrónica
+            { from: '200410', to: '200415' }, // Datos -> Web
+            { from: '200316', to: '200416' }, // TD3 -> Proc. Señales
+            { from: '200413', to: '200417' }, // Control -> Automatización
+            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, // Sis Com + Control -> Gestión
+            { from: '200412', to: '200516' }, { from: '200413', to: '200516' }  // Sis Com + Control -> TFG
+        ];
+        let lineasLeader = []; // Array para guardar las flechas
+
         // 3. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
             // Función auxiliar para saber si un checkbox está tildado
             const val = (id) => {
                 let elemento = document.getElementById(id);
                 return elemento ? elemento.checked : false;
+                // 4. DIBUJAR Y ACTUALIZAR FLECHAS (Correlatividades)
+                // Primero, si ya había flechas, las borramos para dibujarlas de nuevo actualizadas
+                lineasLeader.forEach(linea => linea.remove());
+                lineasLeader = [];
+                
+                flechasData.forEach(rel => {
+                    let origen = document.getElementById('box_' + rel.from);
+                    let destino = document.getElementById('box_' + rel.to);
+                    
+                    if (origen && destino) {
+                        // Si la materia de origen está aprobada, la flecha es verde, si no es gris suave
+                        let estaAprobada = resultados[rel.from];
+                        
+                        let linea = new LeaderLine(origen, destino, {
+                            color: estaAprobada ? '#198754' : '#ccc', // Verde o Gris
+                            size: 2,
+                            path: 'fluid',
+                            startSocket: 'right',
+                            endSocket: 'left'
+                        });
+                        lineasLeader.push(linea);
+                    }
+                });
+                // Reposicionar flechas si el usuario hace scroll horizontal en el mapa
+                document.querySelector('.mapa-container').addEventListener('scroll', () => {
+                    lineasLeader.forEach(linea => linea.position());
+                });
             };
 
             // REGLAS DE EQUIVALENCIA SEGÚN EXCEL
