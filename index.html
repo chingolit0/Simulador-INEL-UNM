@@ -26,12 +26,12 @@
         .mapa-grid { display: flex; gap: 15px; min-width: 600px; padding-bottom: 10px; }
         .cuatrimestre { flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
         .cuatrimestre h3 { text-align: center; background: #4caf50; color: white; margin: 0 0 15px 0; padding: 10px; border-radius: 8px 8px 0 0; font-size: 1.1rem; }
-        .materia-box { border: 2px solid #0275d8; background: white; padding: 10px; margin: 0 10px 15px 10px; text-align: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; min-height: 40px; }
+        .materia-box { border: 2px solid #0275d8; background: white; padding: 10px; margin: 0 10px 15px 10px; text-align: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; min-height: 40px; z-index: 2; position: relative; }
         /* Colores dinámicos para las cajitas */
         .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
         .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
     </style>
-    <!-- Agrego flechas -->
+    <!-- Agrego librería de flechas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
 </head>
 <body>
@@ -163,18 +163,15 @@
         </div>
     </div>
     
-    
     <script>
         // 1. DICCIONARIO DE MATERIAS PLAN 2011
         const materias2011 = [
-            // --- PRIMER AÑO ---
             { id: "2011", nombre: "Álgebra y Geometría Analítica", separador: "Primer Año" },
             { id: "2012", nombre: "Análisis Matemático I" },
             { id: "2013", nombre: "Física I" },
             { id: "2014", nombre: "Química General" },
             { id: "2015", nombre: "Informática I" },
             { id: "2016", nombre: "Inglés Técnico I" },
-            // --- SEGUNDO AÑO ---
             { id: "2021", nombre: "Análisis Matemático II", separador: "Segundo Año" },
             { id: "2022", nombre: "Física II" },
             { id: "2023", nombre: "Técnicas Digitales I" },
@@ -182,27 +179,22 @@
             { id: "2025", nombre: "Informática II" },
             { id: "2026", nombre: "Inglés Técnico II" },
             { id: "2027", nombre: "Probabilidad y Estadística" },
-            // --- TERCER AÑO ---
             { id: "2031", nombre: "Análisis de Señales y Sistemas", separador: "Tercer Año" },
             { id: "2032", nombre: "Teoría de los Circuitos I" },
             { id: "2033", nombre: "Electrónica Aplicada I" },
             { id: "2034", nombre: "Técnicas Digitales II" },
             { id: "2035", nombre: "Instrumentos y Mediciones" },
             { id: "2036", nombre: "Dibujo Asistido por Pc" },
-            // --- CUARTO AÑO ---
             { id: "2041", nombre: "Teoría de los Circuitos II", separador: "Cuarto Año" },
             { id: "2042", nombre: "Electrónica Aplicada II" },
             { id: "2044", nombre: "Medios de Enlace" },
             { id: "2046", nombre: "Ingeniería y Sociedad" },
-            // --- QUINTO AÑO ---
             { id: "2051", nombre: "Sistemas de Control", separador: "Quinto Año" },
             { id: "2052", nombre: "Taller de Proyecto" },
             { id: "2054", nombre: "Seguridad, Higiene y M. Ambiente" },
-            // --- SEXTO AÑO ---
             { id: "2061", nombre: "Economía, Planificación y Gestión", separador: "Sexto Año" },
             { id: "2063", nombre: "Legislación y Ejercicio Prof." },
             { id: "2080", nombre: "Práctica Pre-profesional Supervisada" },
-            // --- REDES ---
             { id: "2017R", nombre: "Redes IA", separador: "Orientación: Redes" },
             { id: "2028R", nombre: "Redes IB" },
             { id: "2037R", nombre: "Redes IIA" },
@@ -216,7 +208,6 @@
             { id: "2073R", nombre: "Sistemas de Comunicación II" },
             { id: "2074R", nombre: "Sistemas de Comunicación III" },
             { id: "2075RM", nombre: "Bioelectrónica" },
-            // --- MULTIMEDIOS ---
             { id: "2017M", nombre: "Óptica y sonido", separador: "Orientación: Multimedios" },
             { id: "2028M", nombre: "Imagen y Acústica" },
             { id: "2037M", nombre: "Grabación" },
@@ -229,7 +220,6 @@
             { id: "2073M", nombre: "Electroacústica" },
             { id: "2074M", nombre: "Sonido en vivo" },
             { id: "2076M", nombre: "Laboratorio de Acústica" },
-            // --- AGRO ---
             { id: "2017A", nombre: "Fundamentos Agronómicos I", separador: "Orientación: Agro" },
             { id: "2028A", nombre: "Fundamentos Agronómicos II" },
             { id: "2037A", nombre: "Mecanización Agrícola" },
@@ -244,10 +234,10 @@
             { id: "2074A", nombre: "Telemetría y Trazabilidad Electrónica" },
             { id: "2075A", nombre: "Sistemas Electrónicos para Producciones Regionales" }
         ];
+
         // DIBUJAR INPUTS DEL PLAN 2011
         const contenedor2011 = document.getElementById('materias-2011');
         materias2011.forEach(mat => {
-            // Si la materia tiene un separador, dibujamos el título primero
             if (mat.separador) {
                 contenedor2011.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
             }
@@ -261,61 +251,51 @@
 
         // 2. DICCIONARIO MATERIAS PLAN 2024
         const materias2024 = [
-            // --- CUATRIMESTRE 1 ---
             { id: "200110", nombre: "Matemática 1", separador: "Primer Cuatrimestre" },
             { id: "200111", nombre: "Física 1" },
             { id: "200112", nombre: "Introducción a la Ing. Electrónica" },
             { id: "200113", nombre: "Informática 1" },
             { id: "200114", nombre: "Inglés técnico 1" },
-            // --- CUATRIMESTRE 2 ---
             { id: "200115", nombre: "Matemática 2a", separador: "Segundo Cuatrimestre" },
             { id: "200116", nombre: "Matemática 2b" },
             { id: "200117", nombre: "Física 2" },
             { id: "200118", nombre: "Técnicas digitales 1" },
             { id: "200119", nombre: "Inglés técnico 2" },
-            // --- CUATRIMESTRE 3 ---
             { id: "200210", nombre: "Matemática 3", separador: "Tercer Cuatrimestre" },
             { id: "200211", nombre: "Física 3" },
             { id: "200212", nombre: "Informática 2" },
             { id: "200213", nombre: "Dispositivos semiconductores" },
             { id: "200214", nombre: "Química General e Inorgánica" },
-            // --- CUATRIMESTRE 4 ---
             { id: "200215", nombre: "Matemática 4", separador: "Cuarto Cuatrimestre" },
             { id: "200216", nombre: "Señales y sistemas" },
             { id: "200217", nombre: "Teoría de circuitos 1" },
             { id: "200218", nombre: "Electrónica aplicada 1" },
             { id: "200219", nombre: "Técnicas digitales 2" },
             { id: "200220", nombre: "Ingeniería y sociedad" },
-            // --- CUATRIMESTRE 5 ---
             { id: "200310", nombre: "Probabilidad, estadística y proc. estocásticos", separador: "Quinto Cuatrimestre" },
             { id: "200311", nombre: "Teoría de circuitos 2" },
             { id: "200312", nombre: "Electrónica aplicada 2" },
             { id: "200313", nombre: "Electromagnetismo aplicado" },
             { id: "200314", nombre: "Dibujo asistido por PC" },
-            // --- CUATRIMESTRE 6 ---
             { id: "200315", nombre: "Diseño electrónico", separador: "Sexto Cuatrimestre" },
             { id: "200316", nombre: "Técnicas digitales 3" },
             { id: "200317", nombre: "Principios de Comunicaciones Digitales" },
             { id: "200318", nombre: "Redes de datos" },
             { id: "200319", nombre: "Electrónica de potencia" },
-            // --- CUATRIMESTRE 7 ---
             { id: "200401", nombre: "ELECTIVA 1", separador: "Séptimo Cuatrimestre" },
             { id: "200410", nombre: "Análisis de datos" },
             { id: "200411", nombre: "Instrumentos y Mediciones Electrónicas" },
             { id: "200412", nombre: "Sistemas de comunicaciones" },
             { id: "200413", nombre: "Sistemas de control" },
-            // --- CUATRIMESTRE 8 ---
             { id: "200414", nombre: "Física electrónica", separador: "Octavo Cuatrimestre" },
             { id: "200415", nombre: "Diseño de Aplicaciones Web" },
             { id: "200416", nombre: "Procesamiento digital de señales" },
             { id: "200417", nombre: "Sistemas de automatización" },
             { id: "200402", nombre: "ELECTIVA 2" },
-            // --- CUATRIMESTRE 9 ---
             { id: "200501", nombre: "ELECTIVA 3", separador: "Noveno Cuatrimestre" },
             { id: "200510", nombre: "Gestión de proyectos electrónicos" },
             { id: "200511", nombre: "Economía, planificación y gestión" },
             { id: "200512", nombre: "Seguridad, higiene y medio ambiente" },
-            // --- CUATRIMESTRE 10 ---
             { id: "200513", nombre: "Legislación y Ejercicio profesional", separador: "Décimo Cuatrimestre" },
             { id: "200514", nombre: "Inglés Técnico 3" },
             { id: "200515", nombre: "Práctica Profesional Supervisada" },
@@ -326,7 +306,6 @@
         // DIBUJAR OUTPUTS DEL PLAN 2024
         const contenedor2024 = document.getElementById('materias-2024');
         materias2024.forEach(mat => {
-            // Si la materia tiene un separador, dibujamos el título primero
             if (mat.separador) {
                 contenedor2024.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
             }
@@ -338,51 +317,51 @@
             `;
         });
 
-        // MAPA DE CORRELATIVIDADES (Flechas)
+        // 3. MAPA DE CORRELATIVIDADES (Flechas)
         const flechasData = [
-            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, // Mate 1 -> Mate 2a, 2b
-            { from: '200111', to: '200117' }, // Física 1 -> Física 2
-            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, // Intro + Info 1 -> TD1
-            { from: '200114', to: '200119' }, // Inglés 1 -> Inglés 2
-            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, // Mate 2a + 2b -> Mate 3
-            { from: '200116', to: '200211' }, { from: '200117', to: '200211' }, // Mate 2b + Fís 2 -> Fís 3
-            { from: '200113', to: '200212' }, // Info 1 -> Info 2
-            { from: '200112', to: '200213' }, // Intro -> Disp Semi
-            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, // Mate 3 -> Mate 4, Señales
-            { from: '200112', to: '200217' }, { from: '200111', to: '200217' }, // Intro + Fís 1 -> TC1
-            { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, // Fís 3 + Disp Semi -> EA1
-            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, // TD1 + Info 2 -> TD2
-            { from: '200215', to: '200310' }, { from: '200216', to: '200310' }, // Mate 4 + Señales -> Probabilidad
-            { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, // Señales + TC1 -> TC2
-            { from: '200218', to: '200312' }, // EA1 -> EA2
-            { from: '200211', to: '200313' }, // Fís 3 -> Electromagnetismo
-            { from: '200312', to: '200315' }, { from: '200311', to: '200315' }, // EA2 + TC2 -> Diseño
-            { from: '200219', to: '200316' }, // TD2 -> TD3
-            { from: '200313', to: '200317' }, { from: '200310', to: '200317' }, // E.Mag + Prob -> Com Dig
-            { from: '200219', to: '200318' }, // TD2 -> Redes
-            { from: '200217', to: '200319' }, { from: '200218', to: '200319' }, // TC1 + EA1 -> Potencia
-            { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, // Prob + Info 2 -> Datos
-            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, // TC2 + EA2 -> Inst. Med
-            { from: '200317', to: '200412' }, { from: '200318', to: '200412' }, // Com Dig + Redes -> Sis Com
-            { from: '200319', to: '200413' }, // Potencia -> Control
-            { from: '200211', to: '200414' }, // Fís 3 -> Fís Electrónica
-            { from: '200410', to: '200415' }, // Datos -> Web
-            { from: '200316', to: '200416' }, // TD3 -> Proc. Señales
-            { from: '200413', to: '200417' }, // Control -> Automatización
-            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, // Sis Com + Control -> Gestión
-            { from: '200412', to: '200516' }, { from: '200413', to: '200516' }  // Sis Com + Control -> TFG
+            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, 
+            { from: '200111', to: '200117' }, 
+            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, 
+            { from: '200114', to: '200119' }, 
+            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, 
+            { from: '200116', to: '200211' }, { from: '200117', to: '200211' }, 
+            { from: '200113', to: '200212' }, 
+            { from: '200112', to: '200213' }, 
+            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, 
+            { from: '200112', to: '200217' }, { from: '200111', to: '200217' }, 
+            { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, 
+            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, 
+            { from: '200215', to: '200310' }, { from: '200216', to: '200310' }, 
+            { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, 
+            { from: '200218', to: '200312' }, 
+            { from: '200211', to: '200313' }, 
+            { from: '200312', to: '200315' }, { from: '200311', to: '200315' }, 
+            { from: '200219', to: '200316' }, 
+            { from: '200313', to: '200317' }, { from: '200310', to: '200317' }, 
+            { from: '200219', to: '200318' }, 
+            { from: '200217', to: '200319' }, { from: '200218', to: '200319' }, 
+            { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, 
+            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, 
+            { from: '200317', to: '200412' }, { from: '200318', to: '200412' }, 
+            { from: '200319', to: '200413' }, 
+            { from: '200211', to: '200414' }, 
+            { from: '200410', to: '200415' }, 
+            { from: '200316', to: '200416' }, 
+            { from: '200413', to: '200417' }, 
+            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, 
+            { from: '200412', to: '200516' }, { from: '200413', to: '200516' }  
         ];
-        let lineasLeader = []; // Array para guardar las flechas
+        let lineasLeader = []; 
 
-        // 3. FUNCIÓN DE CÁLCULO PRINCIPAL
+        // 4. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
-            // Función auxiliar para saber si un checkbox está tildado
+            // Función segura para leer estado
             const val = (id) => {
                 let elemento = document.getElementById(id);
                 return elemento ? elemento.checked : false;
             };
 
-            // REGLAS DE EQUIVALENCIA SEGÚN EXCEL
+            // REGLAS DE EQUIVALENCIA
             let resultados = {
                 "200110": val('2011') || val('2012'),
                 "200111": val('2013'),
@@ -414,7 +393,6 @@
                 "200316": val('2034'),
                 "200317": val('2045R'),
                 "200318": val('2017R') && val('2028R') && val('2037R'),
-                // ELECTIVA 1
                 "200401": val('2017R') || val('2017M') || val('2017A'),
                 "200410": val('2043R'),
                 "200411": val('2035'),
@@ -424,9 +402,7 @@
                 "200415": val('2043R'),
                 "200416": val('2071RM'),
                 "200417": val('2051'),
-                // ELECTIVA 2
                 "200402": (val('2017R') && val('2028R')) || (val('2017M') && val('2028M')) || (val('2017A') && val('2028A')),
-                // ELECTIVA 3
                 "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') &&  val('2028A') && val('2037A')),
                 "200510": val('2052'),
                 "200511": val('2061'),
@@ -434,13 +410,11 @@
                 "200513": val('2063'),
                 "200515": val('2080'),
                 "200516": val('2052'),
-                //ELECTIVA 4
                 "200502": (val('2017R') && val('2028R') && val('2037R') && val('2043R')) || (val('2017M') && val('2028M') && val('2037M') && val('2043M')) || (val('2017A') &&  val('2028A') && val('2037A') && val('2043A'))
             };
 
-            // ACTUALIZAR INTERFAZ Y MAPA VISUAL
+            // ACTUALIZAR TEXTOS Y CAJAS
             for (let id in resultados) {
-                // 1. Actualizar la lista original
                 let elemento = document.getElementById(id);
                 if (elemento) {
                     if (resultados[id]) {
@@ -452,7 +426,6 @@
                     }
                 }
 
-                // 2. Actualizar las cajitas del mapa visual
                 let cajita = document.getElementById('box_' + id);
                 if (cajita) {
                     if (resultados[id]) {
@@ -463,12 +436,10 @@
                 }
             }
 
-            // 4. DIBUJAR Y ACTUALIZAR FLECHAS
-            // Borramos flechas anteriores
+            // ACTUALIZAR FLECHAS
             lineasLeader.forEach(linea => linea.remove());
             lineasLeader = [];
             
-            // Dibujamos las nuevas leyendo el diccionario de resultados
             flechasData.forEach(rel => {
                 let origen = document.getElementById('box_' + rel.from);
                 let destino = document.getElementById('box_' + rel.to);
@@ -485,17 +456,17 @@
                     lineasLeader.push(linea);
                 }
             });
-        } // FIN DE LA FUNCIÓN CALCULAR
+        } // FIN DE CALCULAR()
 
-        // EVENTOS EXTERNOS Y ARRANQUE
-        // Reposicionar flechas al hacer scroll
+        // EVENTOS EXTERNOS
         document.querySelector('.mapa-container').addEventListener('scroll', () => {
             lineasLeader.forEach(linea => linea.position());
         });
 
-        // Ejecutar una vez al cargar la página
         window.addEventListener('load', calcular);
-        
+        window.addEventListener('resize', () => {
+            lineasLeader.forEach(linea => linea.position());
+        });
     </script>
 </body>
 </html>
