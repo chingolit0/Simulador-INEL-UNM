@@ -31,7 +31,7 @@
         .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
         .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
     </style>
-    /Agrego flechas
+    <!-- Agrego flechas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
 </head>
 <body>
@@ -380,33 +380,6 @@
             const val = (id) => {
                 let elemento = document.getElementById(id);
                 return elemento ? elemento.checked : false;
-                // 4. DIBUJAR Y ACTUALIZAR FLECHAS (Correlatividades)
-                // Primero, si ya había flechas, las borramos para dibujarlas de nuevo actualizadas
-                lineasLeader.forEach(linea => linea.remove());
-                lineasLeader = [];
-                
-                flechasData.forEach(rel => {
-                    let origen = document.getElementById('box_' + rel.from);
-                    let destino = document.getElementById('box_' + rel.to);
-                    
-                    if (origen && destino) {
-                        // Si la materia de origen está aprobada, la flecha es verde, si no es gris suave
-                        let estaAprobada = resultados[rel.from];
-                        
-                        let linea = new LeaderLine(origen, destino, {
-                            color: estaAprobada ? '#198754' : '#ccc', // Verde o Gris
-                            size: 2,
-                            path: 'fluid',
-                            startSocket: 'right',
-                            endSocket: 'left'
-                        });
-                        lineasLeader.push(linea);
-                    }
-                });
-                // Reposicionar flechas si el usuario hace scroll horizontal en el mapa
-                document.querySelector('.mapa-container').addEventListener('scroll', () => {
-                    lineasLeader.forEach(linea => linea.position());
-                });
             };
 
             // REGLAS DE EQUIVALENCIA SEGÚN EXCEL
@@ -467,38 +440,61 @@
 
             // ACTUALIZAR INTERFAZ Y MAPA VISUAL
             for (let id in resultados) {
-            // 1. Actualizar la lista original
-            let elemento = document.getElementById(id);
-            if (elemento) {
-                if (resultados[id]) {
-                    elemento.textContent = "Aprobada";
-                    elemento.className = "aprobada";
-                } else {
-                    elemento.textContent = "Pendiente";
-                    elemento.className = "pendiente";
+                // 1. Actualizar la lista original
+                let elemento = document.getElementById(id);
+                if (elemento) {
+                    if (resultados[id]) {
+                        elemento.textContent = "Aprobada";
+                        elemento.className = "aprobada";
+                    } else {
+                        elemento.textContent = "Pendiente";
+                        elemento.className = "pendiente";
+                    }
+                }
+
+                // 2. Actualizar las cajitas del mapa visual
+                let cajita = document.getElementById('box_' + id);
+                if (cajita) {
+                    if (resultados[id]) {
+                        cajita.className = "materia-box box-aprobada";
+                    } else {
+                        cajita.className = "materia-box box-pendiente";
+                    }
                 }
             }
 
-            // 2. Actualizar las cajitas del mapa visual
-            let cajita = document.getElementById('box_' + id);
-            if (cajita) {
-                if (resultados[id]) {
-                    // Si está aprobada, la pintamos de verde
-                    cajita.className = "materia-box box-aprobada";
-                } else {
-                    // Si no, la dejamos neutral/pendiente
-                    cajita.className = "materia-box box-pendiente";
+            // 4. DIBUJAR Y ACTUALIZAR FLECHAS
+            // Borramos flechas anteriores
+            lineasLeader.forEach(linea => linea.remove());
+            lineasLeader = [];
+            
+            // Dibujamos las nuevas leyendo el diccionario de resultados
+            flechasData.forEach(rel => {
+                let origen = document.getElementById('box_' + rel.from);
+                let destino = document.getElementById('box_' + rel.to);
+                
+                if (origen && destino) {
+                    let estaAprobada = resultados[rel.from];
+                    let linea = new LeaderLine(origen, destino, {
+                        color: estaAprobada ? '#198754' : '#ccc', 
+                        size: 2,
+                        path: 'fluid',
+                        startSocket: 'right',
+                        endSocket: 'left'
+                    });
+                    lineasLeader.push(linea);
                 }
-            }
-            }
-        // Reposicionar flechas si el usuario hace scroll horizontal en el mapa
-            document.querySelector('.mapa-container').addEventListener('scroll', () => {
-                lineasLeader.forEach(linea => linea.position());
             });
-        } // Acá cierra la función calcular()
+        } // FIN DE LA FUNCIÓN CALCULAR
 
-        // Ejecutar una vez al inicio para que se dibujen las flechas grises
-        calcular();
+        // EVENTOS EXTERNOS Y ARRANQUE
+        // Reposicionar flechas al hacer scroll
+        document.querySelector('.mapa-container').addEventListener('scroll', () => {
+            lineasLeader.forEach(linea => linea.position());
+        });
+
+        // Ejecutar una vez al cargar la página
+        window.addEventListener('load', calcular);
         
     </script>
 </body>
