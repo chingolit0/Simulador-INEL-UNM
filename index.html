@@ -19,6 +19,18 @@
         .resultado:last-child { border-bottom: none; }
         .aprobada { color: #198754; font-weight: bold; background-color: #d1e7dd; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
         .pendiente { color: #dc3545; font-weight: bold; background-color: #f8d7da; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .anio-titulo { color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 25px; font-size: 1.1rem; }
+        
+        /* ESTILOS PARA EL MAPA VISUAL */
+        .mapa-container { margin-top: 25px; overflow-x: auto; }
+        .mapa-grid { display: flex; gap: 15px; min-width: 600px; padding-bottom: 10px; }
+        .cuatrimestre { flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
+        .cuatrimestre h3 { text-align: center; background: #4caf50; color: white; margin: 0 0 15px 0; padding: 10px; border-radius: 8px 8px 0 0; font-size: 1.1rem; }
+        .materia-box { border: 2px solid #0275d8; background: white; padding: 10px; margin: 0 10px 15px 10px; text-align: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; min-height: 40px; }
+        /* Colores dinámicos para las cajitas */
+        .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
+        .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
+        
     </style>
 </head>
 <body>
@@ -41,23 +53,64 @@
                 <!-- Se generan dinámicamente con JS -->
             </div>
         </div>
+            <!-- MAPA VISUAL DE CORRELATIVIDADES -->
+    <div class="card mapa-container">
+        <h2>Mapa Visual de Correlatividades (Nuevas)</h2>
+        <div class="mapa-grid">
+            
+            <!-- CUATRIMESTRE 1 -->
+            <div class="cuatrimestre">
+                <h3>1</h3>
+                <div id="box_m_mate1" class="materia-box box-pendiente">Matemática 1</div>
+                <div id="box_m_fis1" class="materia-box box-pendiente">Física 1</div>
+                <div id="box_m_inf1" class="materia-box box-pendiente">Informática 1</div>
+                <div id="box_m_intro" class="materia-box box-pendiente">Intro. Ing. Electrónica</div>
+                <div id="box_m_ing1" class="materia-box box-pendiente">Inglés 1</div>
+            </div>
+
+            <!-- CUATRIMESTRE 2 -->
+            <div class="cuatrimestre">
+                <h3>2</h3>
+                <div id="box_m_mate2a" class="materia-box box-pendiente">Matemática 2a</div>
+                <div id="box_m_mate2b" class="materia-box box-pendiente">Matemática 2b</div>
+                <div id="box_m_fis2" class="materia-box box-pendiente">Física 2</div>
+                <div id="box_m_td1" class="materia-box box-pendiente">Técnicas Digitales 1</div>
+                <div id="box_m_ing2" class="materia-box box-pendiente">Inglés 2</div>
+            </div>
+
+            <!-- CUATRIMESTRE 3 -->
+            <div class="cuatrimestre">
+                <h3>3</h3>
+                <div id="box_m_mate3" class="materia-box box-pendiente">Matemática 3</div>
+                <div id="box_m_fis3" class="materia-box box-pendiente">Física 3</div>
+                <div id="box_m_inf2" class="materia-box box-pendiente">Informática 2</div>
+                <div id="box_m_semi" class="materia-box box-pendiente">Dispositivos Semiconductores</div>
+                <div id="box_m_qca" class="materia-box box-pendiente">Química</div>
+            </div>
+
+        </div>
+    </div>
+        
     </div>
 
     <script>
         // 1. DICCIONARIO DE MATERIAS PLAN 2011
         const materias2011 = [
+            // --- PRIMER AÑO ---
             { id: "alg", nombre: "Álgebra y Geometría Analítica" },
             { id: "am1", nombre: "Análisis Matemático I" },
             { id: "fis1", nombre: "Física I" },
             { id: "qca", nombre: "Química General" },
             { id: "inf1", nombre: "Informática I" },
             { id: "ing1", nombre: "Inglés Técnico I" },
+            // --- SEGUNDO AÑO ---
             { id: "am2", nombre: "Análisis Matemático II" },
             { id: "fis2", nombre: "Física II" },
             { id: "td1", nombre: "Técnicas Digitales I" },
             { id: "disp", nombre: "Dispositivos Electrónicos" },
             { id: "inf2", nombre: "Informática II" },
             { id: "ing2", nombre: "Inglés Técnico II" },
+            // --- TERCER AÑO ---
             { id: "prob", nombre: "Probabilidad y Estadística" },
             { id: "senales", nombre: "Análisis de Señales y Sistemas" },
             { id: "tc1", nombre: "Teoría de los Circuitos I" },
@@ -65,23 +118,33 @@
             { id: "td2", nombre: "Técnicas Digitales II" },
             { id: "inst", nombre: "Instrumentos y Mediciones" },
             { id: "dib", nombre: "Dibujo Asistido por Pc" },
+            // --- CUARTO AÑO ---
             { id: "tc2", nombre: "Teoría de los Circuitos II" },
             { id: "ea2", nombre: "Electrónica Aplicada II" },
             { id: "medios", nombre: "Medios de Enlace" },
             { id: "sociedad", nombre: "Ingeniería y Sociedad" },
             { id: "control", nombre: "Sistemas de Control" },
+            // --- QUINTO AÑO ---
             { id: "proyecto", nombre: "Taller de Proyecto" },
             { id: "seguridad", nombre: "Seguridad, Higiene y M. Ambiente" },
             { id: "economia", nombre: "Economía, Planificación y Gestión" },
             { id: "legis", nombre: "Legislación y Ejercicio Prof." },
             { id: "pps", nombre: "Práctica Pre-profesional Supervisada" },
+            // --- REDES ---
             { id: "redes_ia", nombre: "Redes IA" },
             { id: "redes_ib", nombre: "Redes IB" },
             { id: "redes_iia", nombre: "Redes IIA" },
             { id: "entornos", nombre: "Entornos C y Java" },
             { id: "comu1", nombre: "Sistemas de Comunicaciones I" },
-            { id: "comu3", nombre: "Sistemas de Comunicación III" },
-            { id: "dsp", nombre: "Tratamiento Digital de Señales" }
+            { id: "redes_iib", nombre: "Redes IIB" },
+            { id: "sist_dist", nombre: "Sistemas Distribuidos" },
+            { id: "redes_iii", nombre: "Redes III"},
+            { id: "dsp", nombre: "Tratamiento Digital de Señales" },
+            { id: "ant", nombre: "Antenas y Propagación" },
+            { id: "comu3", nombre: "Sistemas de Comunicación III" }
+            // --- MULTIMEDIOS ---
+            
+            // --- AGRO ---
         ];
 
         // DIBUJAR INPUTS DEL PLAN 2011
@@ -207,9 +270,11 @@
                 "m_legis": val('legis')
             };
 
-            // ACTUALIZAR INTERFAZ
+            // ACTUALIZAR INTERFAZ Y MAPA VISUAL
             for (let id in resultados) {
-                let elemento = document.getElementById(id);
+            // 1. Actualizar la lista original
+            let elemento = document.getElementById(id);
+            if (elemento) {
                 if (resultados[id]) {
                     elemento.textContent = "Aprobada";
                     elemento.className = "aprobada";
@@ -217,6 +282,21 @@
                     elemento.textContent = "Pendiente";
                     elemento.className = "pendiente";
                 }
+            }
+
+            // 2. Actualizar las cajitas del mapa visual
+            let cajita = document.getElementById('box_' + id);
+            if (cajita) {
+                if (resultados[id]) {
+                    // Si está aprobada, la pintamos de verde
+                    cajita.className = "materia-box box-aprobada";
+                } else {
+                    // Si no, la dejamos neutral/pendiente
+                    cajita.className = "materia-box box-pendiente";
+                }
+            }
+        }
+
             }
         }
     </script>
