@@ -167,14 +167,14 @@
         // 1. DICCIONARIO DE MATERIAS PLAN 2011
         const materias2011 = [
             // --- PRIMER AÑO ---
-            { id: "2011", nombre: "Álgebra y Geometría Analítica" },
+            { id: "2011", nombre: "Álgebra y Geometría Analítica", separador: "Primer Año" },
             { id: "2012", nombre: "Análisis Matemático I" },
             { id: "2013", nombre: "Física I" },
             { id: "2014", nombre: "Química General" },
             { id: "2015", nombre: "Informática I" },
             { id: "2016", nombre: "Inglés Técnico I" },
             // --- SEGUNDO AÑO ---
-            { id: "2021", nombre: "Análisis Matemático II" },
+            { id: "2021", nombre: "Análisis Matemático II", separador: "Segundo Año" },
             { id: "2022", nombre: "Física II" },
             { id: "2023", nombre: "Técnicas Digitales I" },
             { id: "2024", nombre: "Dispositivos Electrónicos" },
@@ -182,27 +182,27 @@
             { id: "2026", nombre: "Inglés Técnico II" },
             { id: "2027", nombre: "Probabilidad y Estadística" },
             // --- TERCER AÑO ---
-            { id: "2031", nombre: "Análisis de Señales y Sistemas" },
+            { id: "2031", nombre: "Análisis de Señales y Sistemas", separador: "Tercer Año" },
             { id: "2032", nombre: "Teoría de los Circuitos I" },
             { id: "2033", nombre: "Electrónica Aplicada I" },
             { id: "2034", nombre: "Técnicas Digitales II" },
             { id: "2035", nombre: "Instrumentos y Mediciones" },
             { id: "2036", nombre: "Dibujo Asistido por Pc" },
             // --- CUARTO AÑO ---
-            { id: "2041", nombre: "Teoría de los Circuitos II" },
+            { id: "2041", nombre: "Teoría de los Circuitos II", separador: "Cuarto Año" },
             { id: "2042", nombre: "Electrónica Aplicada II" },
             { id: "2044", nombre: "Medios de Enlace" },
             { id: "2046", nombre: "Ingeniería y Sociedad" },
             // --- QUINTO AÑO ---
-            { id: "2051", nombre: "Sistemas de Control" },
+            { id: "2051", nombre: "Sistemas de Control", separador: "Quinto Año" },
             { id: "2052", nombre: "Taller de Proyecto" },
             { id: "2054", nombre: "Seguridad, Higiene y M. Ambiente" },
             // --- SEXTO AÑO ---
-            { id: "2061", nombre: "Economía, Planificación y Gestión" },
+            { id: "2061", nombre: "Economía, Planificación y Gestión", separador: "Sexto Año" },
             { id: "2063", nombre: "Legislación y Ejercicio Prof." },
             { id: "2080", nombre: "Práctica Pre-profesional Supervisada" },
             // --- REDES ---
-            { id: "2017R", nombre: "Redes IA" },
+            { id: "2017R", nombre: "Redes IA", separador: "Orientación: Redes" },
             { id: "2028R", nombre: "Redes IB" },
             { id: "2037R", nombre: "Redes IIA" },
             { id: "2043R", nombre: "Entornos C y Java" },
@@ -210,14 +210,13 @@
             { id: "2053R", nombre: "Redes IIB" },
             { id: "2062R", nombre: "Sistemas Distribuidos" },
             { id: "2064R", nombre: "Redes III"},
-            // --- Electivas de Redes ---
             { id: "2071RM", nombre: "Tratamiento Digital de Señales" },
             { id: "2072R", nombre: "Antenas y Propagación" },
             { id: "2073R", nombre: "Sistemas de Comunicación II" },
             { id: "2074R", nombre: "Sistemas de Comunicación III" },
             { id: "2075RM", nombre: "Bioelectrónica" },
             // --- MULTIMEDIOS ---
-            { id: "2017M", nombre: "Óptica y sonido" },
+            { id: "2017M", nombre: "Óptica y sonido", separador: "Orientación: Multimedios" },
             { id: "2028M", nombre: "Imagen y Acústica" },
             { id: "2037M", nombre: "Grabación" },
             { id: "2043M", nombre: "Audio digital" },
@@ -225,33 +224,32 @@
             { id: "2053M", nombre: "Sistemas de Video II" },
             { id: "2062M", nombre: "Televisión Digital" },
             { id: "2064M", nombre: "Ruido Acústico"},
-            // --- Electivas de Multimedios ---            
-//            { id: "2071RM", nombre: "Tratamiento Digital de Señales" },
             { id: "2072M", nombre: "Mastering y Post prod. de sonido" },
             { id: "2073M", nombre: "Electroacústica" },
             { id: "2074M", nombre: "Sonido en vivo" },
-//            { id: "2075RM", nombre: "Bioelectrónica" },
             { id: "2076M", nombre: "Laboratorio de Acústica" },
             // --- AGRO ---
-            { id: "2017A", nombre: "Fundamentos Agronómicos I" },
+            { id: "2017A", nombre: "Fundamentos Agronómicos I", separador: "Orientación: Agro" },
             { id: "2028A", nombre: "Fundamentos Agronómicos II" },
             { id: "2037A", nombre: "Mecanización Agrícola" },
             { id: "2043A", nombre: "Tecnologías Inalámbricas para el Agro" },
-            { id: "2045A", nombre: "	Electrónica Aplicada al Agro" },
+            { id: "2045A", nombre: "Electrónica Aplicada al Agro" },
             { id: "2053A", nombre: "Sistema de Posicionamiento Satelital" },
             { id: "2062A", nombre: "Sensores y Buses de Comunicación" },
             { id: "2064A", nombre: "Diseño de Dispositivos para Uso Agropecuario"},
-            // --- Electivas de Agro ---            
             { id: "2071A", nombre: "Sistemas para Agro Meteorología" },
             { id: "2072A", nombre: "Electrónica Aplicada a la Ganaderia de Precisión" },
             { id: "2073A", nombre: "Sistemas de Teledetección" },
             { id: "2074A", nombre: "Telemetría y Trazabilidad Electrónica" },
             { id: "2075A", nombre: "Sistemas Electrónicos para Producciones Regionales" }
         ];
-
         // DIBUJAR INPUTS DEL PLAN 2011
         const contenedor2011 = document.getElementById('materias-2011');
         materias2011.forEach(mat => {
+            // Si la materia tiene un separador, dibujamos el título primero
+            if (mat.separador) {
+                contenedor2011.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
+            }
             contenedor2011.innerHTML += `
                 <div class="materia">
                     <input type="checkbox" id="${mat.id}" onchange="calcular()">
@@ -262,57 +260,62 @@
 
         // 2. DICCIONARIO MATERIAS PLAN 2024
         const materias2024 = [
-            // --- PRIMER AÑO ---
-            { id: "200110", nombre: "Matemática 1" },
+            // --- CUATRIMESTRE 1 ---
+            { id: "200110", nombre: "Matemática 1", separador: "Primer Cuatrimestre" },
             { id: "200111", nombre: "Física 1" },
             { id: "200112", nombre: "Introducción a la Ing. Electrónica" },
             { id: "200113", nombre: "Informática 1" },
             { id: "200114", nombre: "Inglés técnico 1" },
-            { id: "200115", nombre: "Matemática 2a" },
+            // --- CUATRIMESTRE 2 ---
+            { id: "200115", nombre: "Matemática 2a", separador: "Segundo Cuatrimestre" },
             { id: "200116", nombre: "Matemática 2b" },
             { id: "200117", nombre: "Física 2" },
             { id: "200118", nombre: "Técnicas digitales 1" },
             { id: "200119", nombre: "Inglés técnico 2" },
-            // --- SEGUNDO AÑO ---
-            { id: "200210", nombre: "Matemática 3" },
+            // --- CUATRIMESTRE 3 ---
+            { id: "200210", nombre: "Matemática 3", separador: "Tercer Cuatrimestre" },
             { id: "200211", nombre: "Física 3" },
             { id: "200212", nombre: "Informática 2" },
             { id: "200213", nombre: "Dispositivos semiconductores" },
             { id: "200214", nombre: "Química General e Inorgánica" },
-            { id: "200215", nombre: "Matemática 4" },
+            // --- CUATRIMESTRE 4 ---
+            { id: "200215", nombre: "Matemática 4", separador: "Cuarto Cuatrimestre" },
             { id: "200216", nombre: "Señales y sistemas" },
             { id: "200217", nombre: "Teoría de circuitos 1" },
             { id: "200218", nombre: "Electrónica aplicada 1" },
             { id: "200219", nombre: "Técnicas digitales 2" },
             { id: "200220", nombre: "Ingeniería y sociedad" },
-            // --- TERCER AÑO ---
-            { id: "200310", nombre: "Probabilidad, estadística y procesos estocásticos" },
+            // --- CUATRIMESTRE 5 ---
+            { id: "200310", nombre: "Probabilidad, estadística y proc. estocásticos", separador: "Quinto Cuatrimestre" },
             { id: "200311", nombre: "Teoría de circuitos 2" },
             { id: "200312", nombre: "Electrónica aplicada 2" },
             { id: "200313", nombre: "Electromagnetismo aplicado" },
             { id: "200314", nombre: "Dibujo asistido por PC" },
-            { id: "200315", nombre: "Diseño electrónico" },
+            // --- CUATRIMESTRE 6 ---
+            { id: "200315", nombre: "Diseño electrónico", separador: "Sexto Cuatrimestre" },
             { id: "200316", nombre: "Técnicas digitales 3" },
             { id: "200317", nombre: "Principios de Comunicaciones Digitales" },
             { id: "200318", nombre: "Redes de datos" },
             { id: "200319", nombre: "Electrónica de potencia" },
-            // --- CUARTO AÑO ---
-            { id: "200401", nombre: "ELECTIVA 1" },
+            // --- CUATRIMESTRE 7 ---
+            { id: "200401", nombre: "ELECTIVA 1", separador: "Séptimo Cuatrimestre" },
             { id: "200410", nombre: "Análisis de datos" },
             { id: "200411", nombre: "Instrumentos y Mediciones Electrónicas" },
             { id: "200412", nombre: "Sistemas de comunicaciones" },
             { id: "200413", nombre: "Sistemas de control" },
-            { id: "200414", nombre: "Física electrónica" },
+            // --- CUATRIMESTRE 8 ---
+            { id: "200414", nombre: "Física electrónica", separador: "Octavo Cuatrimestre" },
             { id: "200415", nombre: "Diseño de Aplicaciones Web" },
             { id: "200416", nombre: "Procesamiento digital de señales" },
             { id: "200417", nombre: "Sistemas de automatización" },
             { id: "200402", nombre: "ELECTIVA 2" },
-            // --- QUINTO AÑO ---
-            { id: "200501", nombre: "ELECTIVA 3" },
+            // --- CUATRIMESTRE 9 ---
+            { id: "200501", nombre: "ELECTIVA 3", separador: "Noveno Cuatrimestre" },
             { id: "200510", nombre: "Gestión de proyectos electrónicos" },
             { id: "200511", nombre: "Economía, planificación y gestión" },
             { id: "200512", nombre: "Seguridad, higiene y medio ambiente" },
-            { id: "200513", nombre: "Legislación y Ejercicio profesional" },
+            // --- CUATRIMESTRE 10 ---
+            { id: "200513", nombre: "Legislación y Ejercicio profesional", separador: "Décimo Cuatrimestre" },
             { id: "200514", nombre: "Inglés Técnico 3" },
             { id: "200515", nombre: "Práctica Profesional Supervisada" },
             { id: "200516", nombre: "Trabajo Final de Grado" },
@@ -322,6 +325,10 @@
         // DIBUJAR OUTPUTS DEL PLAN 2024
         const contenedor2024 = document.getElementById('materias-2024');
         materias2024.forEach(mat => {
+            // Si la materia tiene un separador, dibujamos el título primero
+            if (mat.separador) {
+                contenedor2024.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
+            }
             contenedor2024.innerHTML += `
                 <div class="resultado">
                     <span>${mat.nombre}</span>
