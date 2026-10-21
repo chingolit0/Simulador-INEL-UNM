@@ -351,7 +351,29 @@
             { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, 
             { from: '200412', to: '200516' }, { from: '200413', to: '200516' }  
         ];
-        let lineasLeader = []; 
+        let lineasLeader = []; // Array para guardar las flechas
+
+        // DICCIONARIO DE COLORES POR ÁREA EPISTÉMICA
+        const coloresMapa = {
+            // Matemática - Azul
+            "200110": "#0275d8", "200115": "#0275d8", "200116": "#0275d8", "200210": "#0275d8", "200215": "#0275d8", "200310": "#0275d8",
+            // Física - Naranja
+            "200111": "#fd7e14", "200117": "#fd7e14", "200211": "#fd7e14",
+            // Tecnología Básica en Electrónica - Verde oscuro
+            "200112": "#198754", "200118": "#198754", "200213": "#198754", "200216": "#198754", "200217": "#198754", "200218": "#198754", "200311": "#198754", "200312": "#198754", "200313": "#198754", "200315": "#198754", "200411": "#198754", "200414": "#198754",
+            // Digital - Verde Lima
+            "200219": "#84cc16", "200316": "#84cc16", "200416": "#84cc16",
+            // Informática y Análisis de Datos - Violeta
+            "200113": "#6f42c1", "200212": "#6f42c1", "200314": "#6f42c1", "200410": "#6f42c1", "200415": "#6f42c1",
+            // Comunicaciones - Rosa
+            "200317": "#d63384", "200318": "#d63384", "200412": "#d63384",
+            // Automatización - Rojo
+            "200319": "#dc3545", "200413": "#dc3545", "200417": "#dc3545",
+            // Idiomas - Celeste
+            "200114": "#0dcaf0", "200119": "#0dcaf0", "200514": "#0dcaf0",
+            // Práctica Integradora, Química y Sociales - Dorado
+            "200214": "#ffc107", "200220": "#ffc107", "200510": "#ffc107", "200511": "#ffc107", "200512": "#ffc107", "200513": "#ffc107", "200515": "#ffc107", "200516": "#ffc107"
+        };
 
         // 4. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
@@ -428,15 +450,26 @@
 
                 let cajita = document.getElementById('box_' + id);
                 if (cajita) {
+                    // Buscar el color asignado a esa materia; si no tiene (como las electivas), usa gris oscuro
+                    let colorBase = coloresMapa[id] || "#333333"; 
+
                     if (resultados[id]) {
-                        cajita.className = "materia-box box-aprobada";
+                        // Si está aprobada: se le asigna el color de su área y se resalta el grosor
+                        cajita.className = "materia-box"; 
+                        cajita.style.borderColor = colorBase;
+                        cajita.style.color = colorBase;
+                        cajita.style.borderWidth = "3px";
                     } else {
+                        // Si está pendiente: queda en gris neutro
                         cajita.className = "materia-box box-pendiente";
+                        cajita.style.borderColor = "#6c757d";
+                        cajita.style.color = "#6c757d";
+                        cajita.style.borderWidth = "2px";
                     }
                 }
             }
 
-            // ACTUALIZAR FLECHAS
+            // ACTUALIZAR FLECHAS CON COLORES DE ÁREA
             lineasLeader.forEach(linea => linea.remove());
             lineasLeader = [];
             
@@ -446,9 +479,12 @@
                 
                 if (origen && destino) {
                     let estaAprobada = resultados[rel.from];
+                    // La flecha hereda el color del área de la materia de origen si está aprobada
+                    let colorLinea = estaAprobada ? (coloresMapa[rel.from] || '#333333') : '#cccccc';
+                    
                     let linea = new LeaderLine(origen, destino, {
-                        color: estaAprobada ? '#198754' : '#ccc', 
-                        size: 2,
+                        color: colorLinea, 
+                        size: estaAprobada ? 3 : 2, // Flecha más gruesa si el camino está liberado
                         path: 'fluid',
                         startSocket: 'right',
                         endSocket: 'left'
