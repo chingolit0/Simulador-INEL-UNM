@@ -235,21 +235,40 @@
             { id: "2075A", nombre: "Sistemas Electrónicos para Producciones Regionales" }
         ];
 
-        // DIBUJAR INPUTS DEL PLAN 2011
+                // DIBUJAR INPUTS DEL PLAN 2011
         const contenedor2011 = document.getElementById('materias-2011');
+        let grupoActual = ""; // Variable para agrupar las materias por año
+
         materias2011.forEach(mat => {
             if (mat.separador) {
-                contenedor2011.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
+                // Creamos un identificador sin espacios (ej: "PrimerAño")
+                grupoActual = mat.separador.replace(/\s+/g, '');
+                contenedor2011.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 25px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
+                        <h3 class="anio-titulo" style="margin: 0; border: none; padding: 0;">${mat.separador}</h3>
+                        <button onclick="seleccionarGrupo('${grupoActual}')" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #0056b3; background: transparent; color: #0056b3; cursor: pointer; font-weight: bold;">Marcar todo</button>
+                    </div>
+                `;
             }
             contenedor2011.innerHTML += `
                 <div class="materia">
-                    <input type="checkbox" id="${mat.id}" onchange="calcular()">
+                    <input type="checkbox" id="${mat.id}" class="grupo-${grupoActual}" onchange="calcular()">
                     <label for="${mat.id}">${mat.nombre}</label>
                 </div>
             `;
         });
 
+
         // 2. DICCIONARIO MATERIAS PLAN 2024
+        // Función para tildar/destildar materias por bloque
+        function seleccionarGrupo(grupo) {
+            let checkboxes = document.querySelectorAll('.grupo-' + grupo);
+            // Verificamos si ya están todos marcados para hacer el efecto inverso (desmarcar)
+            let todosMarcados = Array.from(checkboxes).every(chk => chk.checked);
+            checkboxes.forEach(chk => chk.checked = !todosMarcados);
+            calcular(); // Recalculamos el mapa al terminar
+        }
+
         const materias2024 = [
             { id: "200110", nombre: "Matemática 1", separador: "Primer Cuatrimestre" },
             { id: "200111", nombre: "Física 1" },
@@ -469,30 +488,38 @@
                 }
             }
 
-            // ACTUALIZAR FLECHAS CON COLORES DE ÁREA
-            lineasLeader.forEach(linea => linea.remove());
-            lineasLeader = [];
-            
-            flechasData.forEach(rel => {
-                let origen = document.getElementById('box_' + rel.from);
-                let destino = document.getElementById('box_' + rel.to);
-                
-                if (origen && destino) {
-                    let estaAprobada = resultados[rel.from];
-                    // La flecha hereda el color del área de la materia de origen si está aprobada
-                    let colorLinea = estaAprobada ? (coloresMapa[rel.from] || '#333333') : '#cccccc';
+                        // ACTUALIZAR FLECHAS CON COLORES DE ÁREA (SIN BORRARLAS)
+            if (lineasLeader.length === 0) {
+                // Si el array está vacío, creamos las flechas por primera vez
+                flechasData.forEach(rel => {
+                    let origen = document.getElementById('box_' + rel.from);
+                    let destino = document.getElementById('box_' + rel.to);
                     
-                    let linea = new LeaderLine(origen, destino, {
-                        color: colorLinea, 
-                        size: estaAprobada ? 3 : 2, // Flecha más gruesa si el camino está liberado
-                        path: 'fluid',
-                        startSocket: 'right',
-                        endSocket: 'left'
-                    });
-                    lineasLeader.push(linea);
-                }
+                    if (origen && destino) {
+                        let linea = new LeaderLine(origen, destino, {
+                            path: 'fluid',
+                            startSocket: 'right',
+                            endSocket: 'left'
+                        });
+                        // Guardamos la línea visual y su ID de origen para referenciarla luego
+                        lineasLeader.push({ objVisual: linea, fromId: rel.from });
+                    }
+                });
+            }
+
+            // Simplemente actualizamos las propiedades de las líneas ya dibujadas
+            lineasLeader.forEach(item => {
+                let estaAprobada = resultados[item.fromId];
+                // Busca el color asignado a esa área, si no tiene usa un gris oscuro, o gris claro si está pendiente
+                let colorLinea = estaAprobada ? (coloresMapa[item.fromId] || '#333333') : '#cccccc';
+                
+                item.objVisual.setOptions({
+                    color: colorLinea, 
+                    size: estaAprobada ? 3 : 2 // La flecha se engrosa ligeramente al aprobarse
+                });
             });
         } // FIN DE CALCULAR()
+
 
         // EVENTOS EXTERNOS
         document.querySelector('.mapa-container').addEventListener('scroll', () => {
