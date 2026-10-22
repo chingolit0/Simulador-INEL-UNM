@@ -257,6 +257,7 @@
 
         // RELACIONES (Flechas)
         const flechasData = [
+            // --- FLECHAS REALES DE CORRELATIVIDAD ---
             { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, { from: '200111', to: '200117' }, 
             { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, { from: '200114', to: '200119' }, 
             { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, { from: '200116', to: '200211' }, 
@@ -273,7 +274,21 @@
             { from: '200318', to: '200412' }, { from: '200319', to: '200413' }, { from: '200211', to: '200414' }, 
             { from: '200410', to: '200415' }, { from: '200316', to: '200416' }, { from: '200413', to: '200417' }, 
             { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, { from: '200412', to: '200516' }, 
-            { from: '200413', to: '200516' }  
+            { from: '200413', to: '200516' },
+            // --- HILOS INVISIBLES (ANCLAJES) ---
+            { from: '200110', to: '200114', invisible: true }, // Ancla Inglés 1
+            { from: '200115', to: '200214', invisible: true }, // Ancla Química
+            { from: '200210', to: '200220', invisible: true }, // Ancla Ing y Sociedad
+            { from: '200215', to: '200314', invisible: true }, // Ancla Dibujo PC
+            { from: '200315', to: '200401', invisible: true }, // Ancla Electiva 1
+            { from: '200414', to: '200501', invisible: true }, // Ancla Electiva 3
+            { from: '200414', to: '200402', invisible: true }, // Ancla Electiva 2
+            { from: '200510', to: '200511', invisible: true }, // Ancla Economía
+            { from: '200510', to: '200512', invisible: true }, // Ancla Seguridad
+            { from: '200510', to: '200513', invisible: true }, // Ancla Legislación
+            { from: '200510', to: '200514', invisible: true }, // Ancla Inglés 3
+            { from: '200510', to: '200515', invisible: true }, // Ancla Práctica PPS
+            { from: '200516', to: '200502', invisible: true }  // Ancla Electiva 4
         ];
 
         // VARIABLES DE VIS.JS
@@ -356,10 +371,11 @@
                     to: rel.to,
                     arrows: 'to',
                     color: {
-                        color: estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc',
-                        opacity: estaAprobada ? 1 : 0.5
+                        // Si es invisible, transparente. Si no, usa el color de área.
+                        color: rel.invisible ? 'transparent' : (estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc'),
+                        opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.5)
                     },
-                    width: estaAprobada ? 2 : 1
+                    width: rel.invisible ? 0 : (estaAprobada ? 2 : 1)
                 };
             });
 
