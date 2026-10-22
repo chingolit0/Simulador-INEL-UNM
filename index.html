@@ -31,8 +31,9 @@
         .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
         .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
     </style>
-    <!-- Agrego librería de flechas -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+    <!-- Librerías para el Grafo y para exportar a PNG -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -59,108 +60,12 @@
     <!-- MAPA VISUAL DE CORRELATIVIDADES -->
     <div class="card mapa-container">
         <h2>Mapa Visual de Correlatividades (Nuevas)</h2>
-        <div class="mapa-grid">
-            
-            <!-- CUATRIMESTRE 1 -->
-            <div class="cuatrimestre">
-                <h3>1</h3>
-                <div id="box_200110" class="materia-box box-pendiente">Matemática 1</div>
-                <div id="box_200111" class="materia-box box-pendiente">Física 1</div>
-                <div id="box_200112" class="materia-box box-pendiente">Intro. Ing. Electrónica</div>
-                <div id="box_200113" class="materia-box box-pendiente">Informática 1</div>
-                <div id="box_200114" class="materia-box box-pendiente">Inglés 1</div>
-            </div>
-
-            <!-- CUATRIMESTRE 2 -->
-            <div class="cuatrimestre">
-                <h3>2</h3>
-                <div id="box_200115" class="materia-box box-pendiente">Matemática 2a</div>
-                <div id="box_200116" class="materia-box box-pendiente">Matemática 2b</div>
-                <div id="box_200117" class="materia-box box-pendiente">Física 2</div>
-                <div id="box_200118" class="materia-box box-pendiente">Técnicas Digitales 1</div>
-                <div id="box_200119" class="materia-box box-pendiente">Inglés 2</div>
-            </div>
-
-            <!-- CUATRIMESTRE 3 -->
-            <div class="cuatrimestre">
-                <h3>3</h3>
-                <div id="box_200210" class="materia-box box-pendiente">Matemática 3</div>
-                <div id="box_200211" class="materia-box box-pendiente">Física 3</div>
-                <div id="box_200212" class="materia-box box-pendiente">Informática 2</div>
-                <div id="box_200213" class="materia-box box-pendiente">Dispositivos Semiconductores</div>
-                <div id="box_200214" class="materia-box box-pendiente">Química</div>
-            </div>
-
-            <!-- CUATRIMESTRE 4 -->
-            <div class="cuatrimestre">
-                <h3>4</h3>
-                <div id="box_200215" class="materia-box box-pendiente">Matemática 4</div>
-                <div id="box_200216" class="materia-box box-pendiente">Señales y Sistemas</div>
-                <div id="box_200217" class="materia-box box-pendiente">Teoría de Circuitos 1</div>
-                <div id="box_200218" class="materia-box box-pendiente">Electrónica Aplicada 1</div>
-                <div id="box_200219" class="materia-box box-pendiente">Técnicas Digitales 2</div>
-                <div id="box_200220" class="materia-box box-pendiente">Ingeniería y Sociedad</div>
-            </div>
-
-            <!-- CUATRIMESTRE 5 -->
-            <div class="cuatrimestre">
-                <h3>5</h3>
-                <div id="box_200310" class="materia-box box-pendiente">Probabilidad, Estadística y Procesos Estocásticos</div>
-                <div id="box_200311" class="materia-box box-pendiente">Teoría de Circuitos 2</div>
-                <div id="box_200312" class="materia-box box-pendiente">Electrónica Aplicada 2</div>
-                <div id="box_200313" class="materia-box box-pendiente">Electromagnetismo Aplicado</div>
-                <div id="box_200314" class="materia-box box-pendiente">Dibujo Asistido por PC</div>
-            </div>
-
-            <!-- CUATRIMESTRE 6 -->
-            <div class="cuatrimestre">
-                <h3>6</h3>
-                <div id="box_200315" class="materia-box box-pendiente">Diseño Electrónico</div>
-                <div id="box_200316" class="materia-box box-pendiente">Técnicas Digitales 3</div>
-                <div id="box_200317" class="materia-box box-pendiente">Principios de Comunicaciones Digitales</div>
-                <div id="box_200318" class="materia-box box-pendiente">Redes de Datos</div>
-                <div id="box_200319" class="materia-box box-pendiente">Electrónica de Potencia</div>
-            </div>
-
-            <!-- CUATRIMESTRE 7 -->
-            <div class="cuatrimestre">
-                <h3>7</h3>
-                <div id="box_200401" class="materia-box box-pendiente">Asignatura electiva de orientación</div>
-                <div id="box_200410" class="materia-box box-pendiente">Análisis de Datos</div>
-                <div id="box_200411" class="materia-box box-pendiente">Instrumentos y Mediciones Electrónicas</div>
-                <div id="box_200412" class="materia-box box-pendiente">Sistemas de Comunicaciones</div>
-                <div id="box_200413" class="materia-box box-pendiente">Sistemas de Control</div>
-            </div>
-
-            <!-- CUATRIMESTRE 8 -->
-            <div class="cuatrimestre">
-                <h3>8</h3>
-                <div id="box_200414" class="materia-box box-pendiente">Física Electrónica</div>
-                <div id="box_200415" class="materia-box box-pendiente">Diseño de Aplicaciones Web</div>
-                <div id="box_200416" class="materia-box box-pendiente">Procesamiento Digital de Señales	</div>
-                <div id="box_200417" class="materia-box box-pendiente">Sistemas de Automatización</div>
-                <div id="box_200402" class="materia-box box-pendiente">Asignatura electiva de orientación</div>
-            </div>
-
-            <!-- CUATRIMESTRE 9 -->
-            <div class="cuatrimestre">
-                <h3>9</h3>
-                <div id="box_200501" class="materia-box box-pendiente">Asignatura electiva de orientación</div>
-                <div id="box_200510" class="materia-box box-pendiente">Gestión de Proyectos Electrónicos</div>
-                <div id="box_200511" class="materia-box box-pendiente">Economía, Planificación y Gestión</div>
-                <div id="box_200512" class="materia-box box-pendiente">Seguridad, Higiene y Medio Ambiente</div>
-            </div>
-
-            <!-- CUATRIMESTRE 10 -->
-            <div class="cuatrimestre">
-                <h3>10</h3>
-                <div id="box_200513" class="materia-box box-pendiente">Legislación y Ejercicio Profesional</div>
-                <div id="box_200514" class="materia-box box-pendiente">Inglés Técnico 3</div>
-                <div id="box_200515" class="materia-box box-pendiente">Práctica Pre Profesional Supervisada</div>
-                <div id="box_200516" class="materia-box box-pendiente">Trabajo Final de Grado</div>
-                <div id="box_200502" class="materia-box box-pendiente">Asignatura electiva de orientación</div>
-            </div>
-        </div>
+        <button onclick="descargarPNG()" style="margin-bottom: 15px; padding: 10px 15px; background-color: #0d6efd; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
+            Descargar Mapa en PNG
+        </button>
+        
+        <!-- Acá adentro Vis.js va a dibujar todo mágicamente -->
+        <div id="red-vis" style="width: 100%; height: 750px; background-color: #fafafa; border: 1px solid #e0e0e0; border-radius: 8px;"></div>
     </div>
     
     <script>
@@ -337,66 +242,47 @@
         });
 
         // 3. MAPA DE CORRELATIVIDADES (Flechas)
-        const flechasData = [
-            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, 
-            { from: '200111', to: '200117' }, 
-            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, 
-            { from: '200114', to: '200119' }, 
-            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, 
-            { from: '200116', to: '200211' }, { from: '200117', to: '200211' }, 
-            { from: '200113', to: '200212' }, 
-            { from: '200112', to: '200213' }, 
-            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, 
-            { from: '200112', to: '200217' }, { from: '200111', to: '200217' }, 
-            { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, 
-            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, 
-            { from: '200215', to: '200310' }, { from: '200216', to: '200310' }, 
-            { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, 
-            { from: '200218', to: '200312' }, 
-            { from: '200211', to: '200313' }, 
-            { from: '200312', to: '200315' }, { from: '200311', to: '200315' }, 
-            { from: '200219', to: '200316' }, 
-            { from: '200313', to: '200317' }, { from: '200310', to: '200317' }, 
-            { from: '200219', to: '200318' }, 
-            { from: '200217', to: '200319' }, { from: '200218', to: '200319' }, 
-            { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, 
-            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, 
-            { from: '200317', to: '200412' }, { from: '200318', to: '200412' }, 
-            { from: '200319', to: '200413' }, 
-            { from: '200211', to: '200414' }, 
-            { from: '200410', to: '200415' }, 
-            { from: '200316', to: '200416' }, 
-            { from: '200413', to: '200417' }, 
-            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, 
-            { from: '200412', to: '200516' }, { from: '200413', to: '200516' }  
-        ];
-        let lineasLeader = []; // Array para guardar las flechas
-
         // DICCIONARIO DE COLORES POR ÁREA EPISTÉMICA
         const coloresMapa = {
-            // Matemática - Azul
-            "200110": "#0275d8", "200115": "#0275d8", "200116": "#0275d8", "200210": "#0275d8", "200215": "#0275d8", "200310": "#0275d8",
-            // Física - Naranja
-            "200111": "#fd7e14", "200117": "#fd7e14", "200211": "#fd7e14",
-            // Tecnología Básica en Electrónica - Verde oscuro
-            "200112": "#198754", "200118": "#198754", "200213": "#198754", "200216": "#198754", "200217": "#198754", "200218": "#198754", "200311": "#198754", "200312": "#198754", "200313": "#198754", "200315": "#198754", "200411": "#198754", "200414": "#198754",
-            // Digital - Verde Lima
-            "200219": "#84cc16", "200316": "#84cc16", "200416": "#84cc16",
-            // Informática y Análisis de Datos - Violeta
-            "200113": "#6f42c1", "200212": "#6f42c1", "200314": "#6f42c1", "200410": "#6f42c1", "200415": "#6f42c1",
-            // Comunicaciones - Rosa
-            "200317": "#d63384", "200318": "#d63384", "200412": "#d63384",
-            // Automatización - Rojo
-            "200319": "#dc3545", "200413": "#dc3545", "200417": "#dc3545",
-            // Idiomas - Celeste
-            "200114": "#0dcaf0", "200119": "#0dcaf0", "200514": "#0dcaf0",
-            // Práctica Integradora, Química y Sociales - Dorado
-            "200214": "#ffc107", "200220": "#ffc107", "200510": "#ffc107", "200511": "#ffc107", "200512": "#ffc107", "200513": "#ffc107", "200515": "#ffc107", "200516": "#ffc107"
+            "200110": "#0275d8", "200115": "#0275d8", "200116": "#0275d8", "200210": "#0275d8", "200215": "#0275d8", "200310": "#0275d8", // Matemática
+            "200111": "#fd7e14", "200117": "#fd7e14", "200211": "#fd7e14", // Física
+            "200112": "#198754", "200118": "#198754", "200213": "#198754", "200216": "#198754", "200217": "#198754", "200218": "#198754", "200311": "#198754", "200312": "#198754", "200313": "#198754", "200315": "#198754", "200411": "#198754", "200414": "#198754", // Tec. Básica
+            "200219": "#84cc16", "200316": "#84cc16", "200416": "#84cc16", // Digital
+            "200113": "#6f42c1", "200212": "#6f42c1", "200314": "#6f42c1", "200410": "#6f42c1", "200415": "#6f42c1", // Informática
+            "200317": "#d63384", "200318": "#d63384", "200412": "#d63384", // Comunicaciones
+            "200319": "#dc3545", "200413": "#dc3545", "200417": "#dc3545", // Automatización
+            "200114": "#0dcaf0", "200119": "#0dcaf0", "200514": "#0dcaf0", // Idiomas
+            "200214": "#ffc107", "200220": "#ffc107", "200510": "#ffc107", "200511": "#ffc107", "200512": "#ffc107", "200513": "#ffc107", "200515": "#ffc107", "200516": "#ffc107" // Práctica/Sociales
         };
+
+        // RELACIONES (Flechas)
+        const flechasData = [
+            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, { from: '200111', to: '200117' }, 
+            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, { from: '200114', to: '200119' }, 
+            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, { from: '200116', to: '200211' }, 
+            { from: '200117', to: '200211' }, { from: '200113', to: '200212' }, { from: '200112', to: '200213' }, 
+            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, { from: '200112', to: '200217' }, 
+            { from: '200111', to: '200217' }, { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, 
+            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, { from: '200215', to: '200310' }, 
+            { from: '200216', to: '200310' }, { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, 
+            { from: '200218', to: '200312' }, { from: '200211', to: '200313' }, { from: '200312', to: '200315' }, 
+            { from: '200311', to: '200315' }, { from: '200219', to: '200316' }, { from: '200313', to: '200317' }, 
+            { from: '200310', to: '200317' }, { from: '200219', to: '200318' }, { from: '200217', to: '200319' }, 
+            { from: '200218', to: '200319' }, { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, 
+            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, { from: '200317', to: '200412' }, 
+            { from: '200318', to: '200412' }, { from: '200319', to: '200413' }, { from: '200211', to: '200414' }, 
+            { from: '200410', to: '200415' }, { from: '200316', to: '200416' }, { from: '200413', to: '200417' }, 
+            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, { from: '200412', to: '200516' }, 
+            { from: '200413', to: '200516' }  
+        ];
+
+        // VARIABLES DE VIS.JS
+        let network = null;
+        let nodesDataset = new vis.DataSet();
+        let edgesDataset = new vis.DataSet();
 
         // 4. FUNCIÓN DE CÁLCULO PRINCIPAL
         function calcular() {
-            // Función segura para leer estado
             const val = (id) => {
                 let elemento = document.getElementById(id);
                 return elemento ? elemento.checked : false;
@@ -404,132 +290,122 @@
 
             // REGLAS DE EQUIVALENCIA
             let resultados = {
-                "200110": val('2011') || val('2012'),
-                "200111": val('2013'),
-                "200112": val('2014'),
-                "200113": val('2015'),
-                "200114": val('2016'),
-                "200115": val('2011') && val('2012'),
-                "200116": val('2021'),
-                "200117": val('2013'),
-                "200118": val('2023'),
-                "200119": val('2026'),
-                "200210": val('2021'),
-                "200211": val('2022'),
-                "200212": val('2025'),
-                "200213": val('2024'),
-                "200214": val('2014'),
-                "200215": val('2021'),
-                "200216": val('2031'),
-                "200217": val('2032'),
-                "200218": val('2033'),
-                "200219": val('2034'),
-                "200220": val('2046'),
-                "200310": val('2027'),
-                "200311": val('2032') && val('2041'),
-                "200312": val('2042'),
-                "200313": val('2044'),
-                "200314": val('2036'),
-                "200315": val('2042'),
-                "200316": val('2034'),
-                "200317": val('2045R'),
-                "200318": val('2017R') && val('2028R') && val('2037R'),
-                "200401": val('2017R') || val('2017M') || val('2017A'),
-                "200410": val('2043R'),
-                "200411": val('2035'),
-                "200412": val('2074R'),
-                "200413": val('2051'),
-                "200414": val('2022'),
-                "200415": val('2043R'),
-                "200416": val('2071RM'),
-                "200417": val('2051'),
+                "200110": val('2011') || val('2012'), "200111": val('2013'), "200112": val('2014'), "200113": val('2015'),
+                "200114": val('2016'), "200115": val('2011') && val('2012'), "200116": val('2021'), "200117": val('2013'),
+                "200118": val('2023'), "200119": val('2026'), "200210": val('2021'), "200211": val('2022'),
+                "200212": val('2025'), "200213": val('2024'), "200214": val('2014'), "200215": val('2021'),
+                "200216": val('2031'), "200217": val('2032'), "200218": val('2033'), "200219": val('2034'),
+                "200220": val('2046'), "200310": val('2027'), "200311": val('2032') && val('2041'), "200312": val('2042'),
+                "200313": val('2044'), "200314": val('2036'), "200315": val('2042'), "200316": val('2034'),
+                "200317": val('2045R'), "200318": val('2017R') && val('2028R') && val('2037R'),
+                "200401": val('2017R') || val('2017M') || val('2017A'), "200410": val('2043R'), "200411": val('2035'),
+                "200412": val('2074R'), "200413": val('2051'), "200414": val('2022'), "200415": val('2043R'),
+                "200416": val('2071RM'), "200417": val('2051'),
                 "200402": (val('2017R') && val('2028R')) || (val('2017M') && val('2028M')) || (val('2017A') && val('2028A')),
                 "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') &&  val('2028A') && val('2037A')),
-                "200510": val('2052'),
-                "200511": val('2061'),
-                "200512": val('2054'),
-                "200513": val('2063'),
-                "200515": val('2080'),
-                "200516": val('2052'),
+                "200510": val('2052'), "200511": val('2061'), "200512": val('2054'), "200513": val('2063'),
+                "200515": val('2080'), "200516": val('2052'),
                 "200502": (val('2017R') && val('2028R') && val('2037R') && val('2043R')) || (val('2017M') && val('2028M') && val('2037M') && val('2043M')) || (val('2017A') &&  val('2028A') && val('2037A') && val('2043A'))
             };
 
-            // ACTUALIZAR TEXTOS Y CAJAS
+            // ACTUALIZAR TEXTOS EN LA TABLA
             for (let id in resultados) {
                 let elemento = document.getElementById(id);
                 if (elemento) {
-                    if (resultados[id]) {
-                        elemento.textContent = "Aprobada";
-                        elemento.className = "aprobada";
-                    } else {
-                        elemento.textContent = "Pendiente";
-                        elemento.className = "pendiente";
-                    }
-                }
-
-                let cajita = document.getElementById('box_' + id);
-                if (cajita) {
-                    // Buscar el color asignado a esa materia; si no tiene (como las electivas), usa gris oscuro
-                    let colorBase = coloresMapa[id] || "#333333"; 
-
-                    if (resultados[id]) {
-                        // Si está aprobada: se le asigna el color de su área y se resalta el grosor
-                        cajita.className = "materia-box"; 
-                        cajita.style.borderColor = colorBase;
-                        cajita.style.color = colorBase;
-                        cajita.style.borderWidth = "3px";
-                    } else {
-                        // Si está pendiente: queda en gris neutro
-                        cajita.className = "materia-box box-pendiente";
-                        cajita.style.borderColor = "#6c757d";
-                        cajita.style.color = "#6c757d";
-                        cajita.style.borderWidth = "2px";
-                    }
+                    elemento.textContent = resultados[id] ? "Aprobada" : "Pendiente";
+                    elemento.className = resultados[id] ? "aprobada" : "pendiente";
                 }
             }
 
-                        // ACTUALIZAR FLECHAS CON COLORES DE ÁREA (SIN BORRARLAS)
-            if (lineasLeader.length === 0) {
-                // Si el array está vacío, creamos las flechas por primera vez
-                flechasData.forEach(rel => {
-                    let origen = document.getElementById('box_' + rel.from);
-                    let destino = document.getElementById('box_' + rel.to);
-                    
-                    if (origen && destino) {
-                        let linea = new LeaderLine(origen, destino, {
-                            path: 'fluid',
-                            startSocket: 'right',
-                            endSocket: 'left'
-                        });
-                        // Guardamos la línea visual y su ID de origen para referenciarla luego
-                        lineasLeader.push({ objVisual: linea, fromId: rel.from });
-                    }
-                });
-            }
+            // DIBUJAR O ACTUALIZAR EL GRAFO VIS.JS
+            let nodosArray = [];
+            let cuatrimestreActual = 1;
 
-            // Simplemente actualizamos las propiedades de las líneas ya dibujadas
-            lineasLeader.forEach(item => {
-                let estaAprobada = resultados[item.fromId];
-                // Busca el color asignado a esa área, si no tiene usa un gris oscuro, o gris claro si está pendiente
-                let colorLinea = estaAprobada ? (coloresMapa[item.fromId] || '#333333') : '#cccccc';
+            materias2024.forEach(mat => {
+                // Detectamos el cambio de cuatrimestre para ubicarlo en la columna correcta (del 1 al 10)
+                if (mat.separador) {
+                    cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
+                }
                 
-                item.objVisual.setOptions({
-                    color: colorLinea, 
-                    size: estaAprobada ? 3 : 2 // La flecha se engrosa ligeramente al aprobarse
+                let estaAprobada = resultados[mat.id];
+                let colorArea = coloresMapa[mat.id] || "#555555"; 
+
+                // Diseño del nodo
+                nodosArray.push({
+                    id: mat.id,
+                    label: mat.nombre,
+                    level: cuatrimestreActual, // Esto arma las columnas de cuatrimestres
+                    shape: 'box',
+                    color: {
+                        background: estaAprobada ? colorArea : '#ffffff',
+                        border: estaAprobada ? colorArea : '#aaaaaa'
+                    },
+                    font: {
+                        color: estaAprobada ? '#ffffff' : '#333333',
+                        face: 'Segoe UI',
+                        size: 12
+                    },
+                    borderWidth: estaAprobada ? 0 : 2
                 });
             });
+
+            let edgesArray = flechasData.map(rel => {
+                let estaAprobada = resultados[rel.from];
+                return {
+                    from: rel.from,
+                    to: rel.to,
+                    arrows: 'to',
+                    color: {
+                        color: estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc',
+                        opacity: estaAprobada ? 1 : 0.5
+                    },
+                    width: estaAprobada ? 2 : 1
+                };
+            });
+
+            // Si es la primera vez, inicializamos la red
+            if (!network) {
+                nodesDataset.add(nodosArray);
+                edgesDataset.add(edgesArray);
+                
+                let container = document.getElementById('red-vis');
+                let data = { nodes: nodesDataset, edges: edgesDataset };
+                
+                // Configuración de la física y el diseño estilo "Cuadrícula"
+                let options = {
+                    layout: {
+                        hierarchical: {
+                            direction: 'LR', // De Izquierda a Derecha
+                            levelSeparation: 200, // Espacio entre cuatrimestres
+                            nodeSpacing: 60, // Espacio vertical entre materias
+                            sortMethod: 'directed'
+                        }
+                    },
+                    physics: false, // Desactivamos la física para que quede fijo como diagrama
+                    edges: {
+                        smooth: { type: 'cubicBezier', forceDirection: 'horizontal', roundness: 0.4 }
+                    }
+                };
+                network = new vis.Network(container, data, options);
+            } else {
+                // Si ya existe, solo actualizamos colores
+                nodesDataset.update(nodosArray);
+                edgesDataset.update(edgesArray);
+            }
         } // FIN DE CALCULAR()
 
-
-        // EVENTOS EXTERNOS
-        document.querySelector('.mapa-container').addEventListener('scroll', () => {
-            lineasLeader.forEach(linea => linea.position());
-        });
+        // 5. FUNCIÓN PARA EXPORTAR A PNG
+        function descargarPNG() {
+            let container = document.getElementById('red-vis');
+            html2canvas(container).then(canvas => {
+                let link = document.createElement('a');
+                link.download = 'Mapa_Correlatividades_INEL.png';
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        }
 
         window.addEventListener('load', calcular);
-        window.addEventListener('resize', () => {
-            lineasLeader.forEach(linea => linea.position());
-        });
     </script>
 </body>
 </html>
