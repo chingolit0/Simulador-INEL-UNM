@@ -21,13 +21,13 @@
         .pendiente { color: #dc3545; font-weight: bold; background-color: #f8d7da; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
         .anio-titulo { color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 25px; font-size: 1.1rem; }
         
-        /* ESTILOS PARA EL MAPA VISUAL */
+/* ESTILOS PARA EL MAPA VISUAL */
         .mapa-container { margin-top: 25px; overflow-x: auto; }
         .mapa-grid { display: flex; gap: 15px; min-width: 600px; padding-bottom: 10px; }
         .cuatrimestre { flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
         .cuatrimestre h3 { text-align: center; background: #4caf50; color: white; margin: 0 0 15px 0; padding: 10px; border-radius: 8px 8px 0 0; font-size: 1.1rem; }
         .materia-box { border: 2px solid #0275d8; background: white; padding: 10px; margin: 0 10px 15px 10px; text-align: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; min-height: 40px; z-index: 2; position: relative; }
-        /* Colores dinámicos para las cajitas */
+    /* Colores dinámicos para las cajitas */
         .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
         .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
     </style>
@@ -37,7 +37,7 @@
 </head>
 <body>
 
-    <h1>Simulador Equivalencias INEL (2011 ➔ 2024)</h1>
+    <h1>Simulador Equivalencias INEL (2011 ➔ 2027)</h1>
     
     <div class="container">
         <!-- PLAN 2011 -->
@@ -48,10 +48,10 @@
             </div>
         </div>
 
-        <!-- PLAN 2024 -->
+        <!-- PLAN 2027 -->
         <div class="card">
-            <h2>Equivalencias (Plan 2024)</h2>
-            <div id="materias-2024">
+            <h2>Equivalencias (Plan 2027)</h2>
+            <div id="materias-2027">
                 <!-- Se generan dinámicamente con JS -->
             </div>
         </div>
@@ -165,7 +165,7 @@
         });
 
 
-        // 2. DICCIONARIO MATERIAS PLAN 2024
+        // 2. DICCIONARIO MATERIAS PLAN 2027
         // Función para tildar/destildar materias por bloque y cambiar texto del botón
         function seleccionarGrupo(grupo, botonElemento) {
             let checkboxes = document.querySelectorAll('.grupo-' + grupo);
@@ -181,7 +181,7 @@
             calcular(); // Recalculamos el mapa al terminar
         }
 
-        const materias2024 = [
+        const materias2027 = [
             { id: "200110", nombre: "Matemática 1", separador: "Primer Cuatrimestre" },
             { id: "200111", nombre: "Física 1" },
             { id: "200112", nombre: "Introducción a la Ing. Electrónica" },
@@ -234,13 +234,13 @@
             { id: "200502", nombre: "ELECTIVA 4" }
         ];
 
-        // DIBUJAR OUTPUTS DEL PLAN 2024
-        const contenedor2024 = document.getElementById('materias-2024');
-        materias2024.forEach(mat => {
+        // DIBUJAR OUTPUTS DEL PLAN 2027
+        const contenedor2027 = document.getElementById('materias-2027');
+        materias2027.forEach(mat => {
             if (mat.separador) {
-                contenedor2024.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
+                contenedor2027.innerHTML += `<h3 class="anio-titulo">${mat.separador}</h3>`;
             }
-            contenedor2024.innerHTML += `
+            contenedor2027.innerHTML += `
                 <div class="resultado">
                     <span>${mat.nombre}</span>
                     <span id="${mat.id}" class="pendiente">Pendiente</span>
@@ -343,7 +343,7 @@
             let nodosArray = [];
             let cuatrimestreActual = 1;
 
-            materias2024.forEach(mat => {
+            materias2027.forEach(mat => {
                 // Detectamos el cambio de cuatrimestre para ubicarlo en la columna correcta (del 1 al 10)
                 if (mat.separador) {
                     cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
@@ -428,7 +428,7 @@
             }
         } // FIN DE CALCULAR()
 
-                // 5. FUNCIÓN PARA EXPORTAR A PNG (PÓSTER EN ALTA DEFINICIÓN HD)
+// 5. FUNCIÓN PARA EXPORTAR A PNG (PÓSTER HD - VERSIÓN MÓVIL SÍNCRONA)
         function descargarPNG() {
             if (!network) return alert("El mapa aún no se ha generado.");
 
@@ -441,51 +441,47 @@
 
             // 2. Calculamos el tamaño físico real de todo el mapa extendido
             const boundingBox = network.getBoundingBox();
-            // Le damos un margen de 100px para que no quede pegado a los bordes
             const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 100;
             const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 100;
 
-            // 3. Engañamos al contenedor para que tome el tamaño gigante del mapa
-            // Usamos un mínimo de 1500px de alto para que no se achate
-            container.style.width = Math.max(anchoReal, 1000) + 'px';
-            container.style.height = Math.max(altoReal, 1500) + 'px';
+            const nuevoAncho = Math.max(anchoReal, 1000) + 'px';
+            const nuevoAlto = Math.max(altoReal, 1500) + 'px';
+
+            // 3. Agrandamos el contenedor y forzamos a Vis.js a dibujarlo AL INSTANTE
+            container.style.width = nuevoAncho;
+            container.style.height = nuevoAlto;
+            network.setSize(nuevoAncho, nuevoAlto);
+            network.fit({ animation: false }); // Encuadra sin animaciones
+            network.redraw(); // Dibuja la máxima calidad inmediatamente
+
+            // 4. Sacamos la foto (Todo en el mismo milisegundo del clic)
+            const canvasElement = document.querySelector('#red-vis canvas');
+            const canvasTemp = document.createElement('canvas');
+            canvasTemp.width = canvasElement.width;
+            canvasTemp.height = canvasElement.height;
+            const ctx = canvasTemp.getContext('2d');
             
-            // Forzamos a Vis.js a redibujar el canvas en calidad gigante
-            network.redraw();
-            network.fit();
+            // Fondo blanco
+            ctx.fillStyle = '#fafafa';
+            ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+            ctx.drawImage(canvasElement, 0, 0);
 
-            // 4. Esperamos a que termine de dibujar y sacamos la foto
-            network.once('afterDrawing', function() {
-                const canvasElement = document.querySelector('#red-vis canvas');
-                
-                const canvasTemp = document.createElement('canvas');
-                canvasTemp.width = canvasElement.width;
-                canvasTemp.height = canvasElement.height;
-                const ctx = canvasTemp.getContext('2d');
-                
-                // Fondo blanco
-                ctx.fillStyle = '#fafafa';
-                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-                ctx.drawImage(canvasElement, 0, 0);
+            // Simulamos el clic de descarga y el celular ahora sí lo permite
+            const link = document.createElement('a');
+            link.download = 'Mapa_Correlatividades_HD.png';
+            link.href = canvasTemp.toDataURL('image/png');
+            link.click();
 
-                // Descargamos la imagen HD
-                const link = document.createElement('a');
-                link.download = 'Mapa_Correlatividades_HD.png';
-                link.href = canvasTemp.toDataURL('image/png');
-                link.click();
-
-                // 5. Volvemos a achicar todo a la normalidad para el usuario
-                container.style.width = originalWidth;
-                container.style.height = originalHeight;
-                network.redraw(); 
-                network.moveTo({
-                    position: posicionOriginal,
-                    scale: zoomOriginal,
-                    animation: false
-                });
+            // 5. Restauramos todo a la normalidad instantáneamente
+            container.style.width = originalWidth;
+            container.style.height = originalHeight;
+            network.setSize(originalWidth, originalHeight);
+            network.moveTo({
+                position: posicionOriginal,
+                scale: zoomOriginal,
+                animation: false
             });
         }
-
 
         window.addEventListener('load', calcular);
     </script>
