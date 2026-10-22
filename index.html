@@ -421,38 +421,56 @@
             }
         } // FIN DE CALCULAR()
 
-                // 5. FUNCIÓN PARA EXPORTAR A PNG (MAPA COMPLETO)
+                // 5. FUNCIÓN PARA EXPORTAR A PNG (PÓSTER EN ALTA DEFINICIÓN HD)
         function descargarPNG() {
             if (!network) return alert("El mapa aún no se ha generado.");
 
-            // 1. Guardar la posición y el zoom actuales del usuario
+            // 1. Guardamos el estado original
+            const container = document.getElementById('red-vis');
+            const originalWidth = container.style.width;
+            const originalHeight = container.style.height;
             const zoomOriginal = network.getScale();
             const posicionOriginal = network.getViewPosition();
 
-            // 2. Forzar a Vis.js a encuadrar la totalidad de los nodos
+            // 2. Calculamos el tamaño físico real de todo el mapa extendido
+            const boundingBox = network.getBoundingBox();
+            // Le damos un margen de 100px para que no quede pegado a los bordes
+            const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 100;
+            const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 100;
+
+            // 3. Engañamos al contenedor para que tome el tamaño gigante del mapa
+            // Usamos un mínimo de 1500px de alto para que no se achate
+            container.style.width = Math.max(anchoReal, 1000) + 'px';
+            container.style.height = Math.max(altoReal, 1500) + 'px';
+            
+            // Forzamos a Vis.js a redibujar el canvas en calidad gigante
+            network.redraw();
             network.fit();
 
-            // 3. Esperar a que el motor termine de redibujar el nuevo encuadre
+            // 4. Esperamos a que termine de dibujar y sacamos la foto
             network.once('afterDrawing', function() {
                 const canvasElement = document.querySelector('#red-vis canvas');
                 
-                // Crear un lienzo temporal para aplicar el fondo correctamente
                 const canvasTemp = document.createElement('canvas');
                 canvasTemp.width = canvasElement.width;
                 canvasTemp.height = canvasElement.height;
                 const ctx = canvasTemp.getContext('2d');
                 
+                // Fondo blanco
                 ctx.fillStyle = '#fafafa';
                 ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
                 ctx.drawImage(canvasElement, 0, 0);
 
-                // Descargar el archivo
+                // Descargamos la imagen HD
                 const link = document.createElement('a');
-                link.download = 'Mapa_Correlatividades_Completo.png';
+                link.download = 'Mapa_Correlatividades_HD.png';
                 link.href = canvasTemp.toDataURL('image/png');
                 link.click();
 
-                // 4. Restaurar la vista original inmediatamente sin animación
+                // 5. Volvemos a achicar todo a la normalidad para el usuario
+                container.style.width = originalWidth;
+                container.style.height = originalHeight;
+                network.redraw(); 
                 network.moveTo({
                     position: posicionOriginal,
                     scale: zoomOriginal,
