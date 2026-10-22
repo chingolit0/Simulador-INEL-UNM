@@ -165,12 +165,18 @@
 
 
         // 2. DICCIONARIO MATERIAS PLAN 2024
-        // Función para tildar/destildar materias por bloque
-        function seleccionarGrupo(grupo) {
+        // Función para tildar/destildar materias por bloque y cambiar texto del botón
+        function seleccionarGrupo(grupo, botonElemento) {
             let checkboxes = document.querySelectorAll('.grupo-' + grupo);
-            // Verificamos si ya están todos marcados para hacer el efecto inverso (desmarcar)
+            // Verificamos si ya están todos marcados para hacer el efecto inverso
             let todosMarcados = Array.from(checkboxes).every(chk => chk.checked);
             checkboxes.forEach(chk => chk.checked = !todosMarcados);
+            
+            // Cambiar el texto del botón
+            if (botonElemento) {
+                botonElemento.innerText = todosMarcados ? "Marcar todo" : "Desmarcar";
+            }
+            
             calcular(); // Recalculamos el mapa al terminar
         }
 
