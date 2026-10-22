@@ -421,35 +421,44 @@
             }
         } // FIN DE CALCULAR()
 
-                // 5. FUNCIÓN PARA EXPORTAR A PNG (TAMAÑO ORIGINAL COMPLETO)
+                // 5. FUNCIÓN PARA EXPORTAR A PNG (MAPA COMPLETO)
         function descargarPNG() {
-            // Buscamos el elemento canvas real que Vis.js crea adentro del div '#red-vis'
-            const canvasElement = document.querySelector('#red-vis canvas');
-            
-            if (canvasElement) {
-                // Guardamos el estado del canvas para no arruinar la vista al usuario
-                const context = canvasElement.getContext("2d");
-                context.save();
-                
-                // Le inyectamos un fondo blanco temporal, sino el PNG sale transparente y en el celular se ve negro
-                context.globalCompositeOperation = 'destination-over';
-                context.fillStyle = '#fafafa'; 
-                context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+            if (!network) return alert("El mapa aún no se ha generado.");
 
-                // Convertimos el gráfico gigante a una URL de imagen
-                let dataUrl = canvasElement.toDataURL('image/png');
-                
-                // Restauramos el canvas a la normalidad
-                context.restore();
+            // 1. Guardar la posición y el zoom actuales del usuario
+            const zoomOriginal = network.getScale();
+            const posicionOriginal = network.getViewPosition();
 
-                // Simulamos el clic de descarga
-                let link = document.createElement('a');
-                link.download = 'Mapa_Correlatividades_INEL_Completo.png';
-                link.href = dataUrl;
+            // 2. Forzar a Vis.js a encuadrar la totalidad de los nodos
+            network.fit();
+
+            // 3. Esperar a que el motor termine de redibujar el nuevo encuadre
+            network.once('afterDrawing', function() {
+                const canvasElement = document.querySelector('#red-vis canvas');
+                
+                // Crear un lienzo temporal para aplicar el fondo correctamente
+                const canvasTemp = document.createElement('canvas');
+                canvasTemp.width = canvasElement.width;
+                canvasTemp.height = canvasElement.height;
+                const ctx = canvasTemp.getContext('2d');
+                
+                ctx.fillStyle = '#fafafa';
+                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+                ctx.drawImage(canvasElement, 0, 0);
+
+                // Descargar el archivo
+                const link = document.createElement('a');
+                link.download = 'Mapa_Correlatividades_Completo.png';
+                link.href = canvasTemp.toDataURL('image/png');
                 link.click();
-            } else {
-                alert("Ocurrió un error al generar el mapa.");
-            }
+
+                // 4. Restaurar la vista original inmediatamente sin animación
+                network.moveTo({
+                    position: posicionOriginal,
+                    scale: zoomOriginal,
+                    animation: false
+                });
+            });
         }
 
 
