@@ -371,27 +371,30 @@
                 let container = document.getElementById('red-vis');
                 let data = { nodes: nodesDataset, edges: edgesDataset };
                 
-                // Configuración de la física y el diseño estilo "Red Constelación"
+                // Configuración de la física y el diseño estilo "Cuadrícula Estricta"
                 let options = {
                     layout: {
-                        randomSeed: 2 // Fija la posición inicial para que no cambie cada vez que recargás
-                    },
-                    physics: {
-                        enabled: true,
-                        barnesHut: {
-                            gravitationalConstant: -2000,
-                            centralGravity: 0.3,
-                            springLength: 120, // Largo de las flechas
-                            springConstant: 0.04,
-                            damping: 0.09,
-                            avoidOverlap: 0.2
-                        },
-                        stabilization: {
-                            iterations: 100 // Estabiliza rápido al arrancar
+                        hierarchical: {
+                            enabled: true,
+                            direction: 'LR', // De Izquierda a Derecha (Cuatrimestres como columnas)
+                            levelSeparation: 250, // Distancia horizontal entre los cuatrimestres
+                            nodeSpacing: 70, // Distancia vertical fija entre las "filas" de materias
+                            treeSpacing: 70, // Distancia entre ramas o materias sueltas
+                            blockShifting: true, // Intenta agrupar las sueltas en bloques compactos
+                            edgeMinimization: true, // Intenta cruzar las flechas lo menos posible
+                            parentCentralization: false, // Evita que las materias se amontonen en el centro
+                            sortMethod: 'directed' // Ordena basado en las flechas (y empuja las sueltas al fondo)
                         }
                     },
+                    physics: {
+                        enabled: false // Apagamos la física de resortes para que la estructura sea rígida como una tabla
+                    },
                     edges: {
-                        smooth: { type: 'cubicBezier', forceDirection: 'horizontal', roundness: 0.4 }
+                        smooth: { 
+                            type: 'cubicBezier', 
+                            forceDirection: 'horizontal', 
+                            roundness: 0.5 
+                        }
                     }
                 };
                 network = new vis.Network(container, data, options);
