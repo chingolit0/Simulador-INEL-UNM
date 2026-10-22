@@ -151,9 +151,10 @@
                 contenedor2011.innerHTML += `
                     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 25px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
                         <h3 class="anio-titulo" style="margin: 0; border: none; padding: 0;">${mat.separador}</h3>
-                        <button onclick="seleccionarGrupo('${grupoActual}')" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #0056b3; background: transparent; color: #0056b3; cursor: pointer; font-weight: bold;">Marcar todo</button>
+                        <button onclick="seleccionarGrupo('${grupoActual}', this)" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #0056b3; background: transparent; color: #0056b3; cursor: pointer; font-weight: bold;">Marcar todo</button>
                     </div>
                 `;
+                
             }
             contenedor2011.innerHTML += `
                 <div class="materia">
