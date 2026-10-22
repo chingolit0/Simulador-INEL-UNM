@@ -421,16 +421,35 @@
             }
         } // FIN DE CALCULAR()
 
-        // 5. FUNCIÓN PARA EXPORTAR A PNG
+                // 5. FUNCIÓN PARA EXPORTAR A PNG (CAPTURANDO EL GRAFO COMPLETO)
         function descargarPNG() {
-            let container = document.getElementById('red-vis');
-            html2canvas(container).then(canvas => {
+            // Obtenemos el elemento Canvas interno que Vis.js creó
+            const canvasElement = document.querySelector('#red-vis canvas');
+            
+            if (canvasElement) {
+                // Guardamos el color de fondo original del canvas (suele ser transparente)
+                const context = canvasElement.getContext("2d");
+                context.save();
+                context.globalCompositeOperation = 'destination-over';
+                context.fillStyle = '#fafafa'; // Mismo fondo que le dimos al contenedor
+                context.fillRect(0, 0, canvasElement.width, canvasElement.height);
+
+                // Convertimos el contenido completo del canvas a una URL de imagen
+                let dataUrl = canvasElement.toDataURL('image/png');
+                
+                // Restauramos el canvas a su estado original
+                context.restore();
+
+                // Simulamos el clic para descargar
                 let link = document.createElement('a');
                 link.download = 'Mapa_Correlatividades_INEL.png';
-                link.href = canvas.toDataURL("image/png");
+                link.href = dataUrl;
                 link.click();
-            });
+            } else {
+                alert("El mapa aún no se ha generado correctamente.");
+            }
         }
+
 
         window.addEventListener('load', calcular);
     </script>
