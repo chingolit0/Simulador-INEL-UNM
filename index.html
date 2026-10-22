@@ -371,17 +371,25 @@
                 let container = document.getElementById('red-vis');
                 let data = { nodes: nodesDataset, edges: edgesDataset };
                 
-                // Configuración de la física y el diseño estilo "Cuadrícula"
+                // Configuración de la física y el diseño estilo "Red Constelación"
                 let options = {
                     layout: {
-                        hierarchical: {
-                            direction: 'LR', // De Izquierda a Derecha
-                            levelSeparation: 200, // Espacio entre cuatrimestres
-                            nodeSpacing: 60, // Espacio vertical entre materias
-                            sortMethod: 'directed'
+                        randomSeed: 2 // Fija la posición inicial para que no cambie cada vez que recargás
+                    },
+                    physics: {
+                        enabled: true,
+                        barnesHut: {
+                            gravitationalConstant: -2000,
+                            centralGravity: 0.3,
+                            springLength: 120, // Largo de las flechas
+                            springConstant: 0.04,
+                            damping: 0.09,
+                            avoidOverlap: 0.2
+                        },
+                        stabilization: {
+                            iterations: 100 // Estabiliza rápido al arrancar
                         }
                     },
-                    physics: false, // Desactivamos la física para que quede fijo como diagrama
                     edges: {
                         smooth: { type: 'cubicBezier', forceDirection: 'horizontal', roundness: 0.4 }
                     }
