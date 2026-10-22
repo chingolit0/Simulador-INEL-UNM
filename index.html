@@ -421,32 +421,34 @@
             }
         } // FIN DE CALCULAR()
 
-                // 5. FUNCIÓN PARA EXPORTAR A PNG (CAPTURANDO EL GRAFO COMPLETO)
+                // 5. FUNCIÓN PARA EXPORTAR A PNG (TAMAÑO ORIGINAL COMPLETO)
         function descargarPNG() {
-            // Obtenemos el elemento Canvas interno que Vis.js creó
+            // Buscamos el elemento canvas real que Vis.js crea adentro del div '#red-vis'
             const canvasElement = document.querySelector('#red-vis canvas');
             
             if (canvasElement) {
-                // Guardamos el color de fondo original del canvas (suele ser transparente)
+                // Guardamos el estado del canvas para no arruinar la vista al usuario
                 const context = canvasElement.getContext("2d");
                 context.save();
+                
+                // Le inyectamos un fondo blanco temporal, sino el PNG sale transparente y en el celular se ve negro
                 context.globalCompositeOperation = 'destination-over';
-                context.fillStyle = '#fafafa'; // Mismo fondo que le dimos al contenedor
+                context.fillStyle = '#fafafa'; 
                 context.fillRect(0, 0, canvasElement.width, canvasElement.height);
 
-                // Convertimos el contenido completo del canvas a una URL de imagen
+                // Convertimos el gráfico gigante a una URL de imagen
                 let dataUrl = canvasElement.toDataURL('image/png');
                 
-                // Restauramos el canvas a su estado original
+                // Restauramos el canvas a la normalidad
                 context.restore();
 
-                // Simulamos el clic para descargar
+                // Simulamos el clic de descarga
                 let link = document.createElement('a');
-                link.download = 'Mapa_Correlatividades_INEL.png';
+                link.download = 'Mapa_Correlatividades_INEL_Completo.png';
                 link.href = dataUrl;
                 link.click();
             } else {
-                alert("El mapa aún no se ha generado correctamente.");
+                alert("Ocurrió un error al generar el mapa.");
             }
         }
 
