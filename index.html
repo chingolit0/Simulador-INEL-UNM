@@ -428,59 +428,72 @@
             }
         } // FIN DE CALCULAR()
 
-        // 5. FUNCIÓN PARA EXPORTAR A PNG (PÓSTER HD - VERSIÓN MÓVIL SÍNCRONA)
+        // 5. FUNCIÓN PARA EXPORTAR A PNG (MÉTODO NATIVO PARA CELULARES - TAMAÑO ESTRICTO)
         function descargarPNG() {
             if (!network) return alert("El mapa aún no se ha generado.");
+            
+            let boton = document.querySelector('button[onclick="descargarPNG()"]');
+            boton.innerText = "⏳ Procesando póster HD...";
+            boton.disabled = true;
 
-            // 1. Guardamos el estado original
             const container = document.getElementById('red-vis');
             const originalWidth = container.style.width;
             const originalHeight = container.style.height;
             const zoomOriginal = network.getScale();
             const posicionOriginal = network.getViewPosition();
 
-            // 2. Calculamos el tamaño físico real de todo el mapa extendido
+            // --- CÁLCULO DE TAMAÑO ESTRICTO CON MARGEN ---
+            const margen = 120; // Píxeles de aire alrededor del mapa (modificalo a gusto)
             const boundingBox = network.getBoundingBox();
-            const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 100;
-            const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 100;
+            const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + margen;
+            const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + margen;
 
-            const nuevoAncho = Math.max(anchoReal, 1000) + 'px';
-            const nuevoAlto = Math.max(altoReal, 1500) + 'px';
-
-            // 3. Agrandamos el contenedor y forzamos a Vis.js a dibujarlo AL INSTANTE
-            container.style.width = nuevoAncho;
-            container.style.height = nuevoAlto;
-            network.setSize(nuevoAncho, nuevoAlto);
-            network.fit({ animation: false }); // Encuadra sin animaciones
-            network.redraw(); // Dibuja la máxima calidad inmediatamente
-
-            // 4. Sacamos la foto (Todo en el mismo milisegundo del clic)
-            const canvasElement = document.querySelector('#red-vis canvas');
-            const canvasTemp = document.createElement('canvas');
-            canvasTemp.width = canvasElement.width;
-            canvasTemp.height = canvasElement.height;
-            const ctx = canvasTemp.getContext('2d');
+            // Ajustamos el contenedor al tamaño exacto
+            container.style.width = anchoReal + 'px';
+            container.style.height = altoReal + 'px';
+            network.setSize(anchoReal + 'px', altoReal + 'px'); 
             
-            // Fondo blanco
-            ctx.fillStyle = '#fafafa';
-            ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-            ctx.drawImage(canvasElement, 0, 0);
+            network.redraw();
+            network.fit({ animation: false });
 
-            // Simulamos el clic de descarga y el celular ahora sí lo permite
-            const link = document.createElement('a');
-            link.download = 'Mapa_Correlatividades_HD.png';
-            link.href = canvasTemp.toDataURL('image/png');
-            link.click();
+            // Pequeña pausa para que el motor gráfico del celular reaccione
+            setTimeout(() => {
+                network.once('afterDrawing', function() {
+                    const canvasElement = document.querySelector('#red-vis canvas');
+                    const canvasTemp = document.createElement('canvas');
+                    canvasTemp.width = canvasElement.width;
+                    canvasTemp.height = canvasElement.height;
+                    const ctx = canvasTemp.getContext('2d');
+                    
+                    ctx.fillStyle = '#fafafa';
+                    ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+                    ctx.drawImage(canvasElement, 0, 0);
 
-            // 5. Restauramos todo a la normalidad instantáneamente
-            container.style.width = originalWidth;
-            container.style.height = originalHeight;
-            network.setSize(originalWidth, originalHeight);
-            network.moveTo({
-                position: posicionOriginal,
-                scale: zoomOriginal,
-                animation: false
-            });
+                    // Inyectamos la imagen directamente en la página
+                    let imgExportada = document.getElementById('mapa-exportado');
+                    if (!imgExportada) {
+                        imgExportada = document.createElement('img');
+                        imgExportada.id = 'mapa-exportado';
+                        imgExportada.style.width = '100%';
+                        imgExportada.style.marginTop = '20px';
+                        imgExportada.style.border = '3px solid #198754';
+                        imgExportada.style.borderRadius = '8px';
+                        container.parentNode.insertBefore(imgExportada, container.nextSibling);
+                    }
+                    imgExportada.src = canvasTemp.toDataURL('image/png');
+
+                    // Restauramos el visor a la normalidad
+                    container.style.width = originalWidth;
+                    container.style.height = originalHeight;
+                    network.setSize(originalWidth, originalHeight); // Restauramos el tamaño interno
+                    network.redraw(); 
+                    network.moveTo({ position: posicionOriginal, scale: zoomOriginal, animation: false });
+
+                    boton.innerText = "✅ ¡Listo! Mantené apretada la imagen de abajo para guardarla";
+                    boton.style.backgroundColor = "#198754";
+                });
+                network.redraw(); 
+            }, 300);
         }
 
 
