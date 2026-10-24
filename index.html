@@ -184,7 +184,7 @@
 
         <div id="contenedor-imagen" style="margin-top: 25px;"></div>
 
-        <div id="red-oculta" style="position: fixed; top: 0; left: 0; width: 2500px; height: 1500px; opacity: 0; pointer-events: none; visibility: hidden; z-index: -1;"></div>
+        <div id="red-oculta" style="position: fixed; top: 0; left: 0; width: 2500px; height: 1500px; opacity: 0; pointer-events: none; visibility: visible; z-index: -1;"></div>
     </div>
 
     <script>
@@ -526,164 +526,159 @@
     });
 
     networkOculta.once("afterDrawing", () => {
-        const canvasElement = contenedorOculto.querySelector("canvas");
+    const canvasElement = contenedorOculto.querySelector("canvas");
 
-        if (!canvasElement) {
-            boton.disabled = false;
-            boton.innerText = "🔄 Intentar de nuevo";
-            boton.style.backgroundColor = "#0d6efd";
-            return;
-        }
+    if (!canvasElement) {
+        boton.disabled = false;
+        boton.innerText = "🔄 Intentar de nuevo";
+        boton.style.backgroundColor = "#0d6efd";
+        return;
+    }
 
-        let boundingBox = networkOculta.getBoundingBox();
+    let boundingBox = networkOculta.getBoundingBox();
 
-        if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
-            console.warn("Bounding box undefined, reintentando...");
-            setTimeout(() => {
-                boundingBox = networkOculta.getBoundingBox();
+    if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
+        console.warn("Bounding box no disponible todavía.");
+        setTimeout(() => {
+            boundingBox = networkOculta.getBoundingBox();
 
-                if (!boundingBox || typeof boundingBox.right === "undefined") {
-                    boton.disabled = false;
-                    boton.innerText = "🔄 Intentar de nuevo";
-                    boton.style.backgroundColor = "#0d6efd";
-                    return;
-                }
-
-                const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-                const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
-
-                const canvasTemp = document.createElement("canvas");
-                canvasTemp.width = anchoReal;
-                canvasTemp.height = altoReal;
-
-                const ctx = canvasTemp.getContext("2d");
-                ctx.fillStyle = "#fafafa";
-                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-                const scale = networkOculta.getScale();
-                const pos = networkOculta.getViewPosition();
-
-                const canvasElement2 = contenedorOculto.querySelector("canvas");
-                if (canvasElement2) {
-                    ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-                    ctx.scale(scale, scale);
-                    ctx.drawImage(canvasElement2, -canvasElement2.width / 2, -canvasElement2.height / 2);
-                }
-
-                const imgExportada = document.createElement("img");
-                imgExportada.style.width = "100%";
-                imgExportada.style.border = "3px solid #198754";
-                imgExportada.style.borderRadius = "8px";
-                imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-
-                const mensaje = document.createElement("p");
-                mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
-                mensaje.style.fontWeight = "bold";
-                mensaje.style.color = "#198754";
-                mensaje.style.marginTop = "15px";
-
-                const linkDescarga = document.createElement("a");
-                linkDescarga.textContent = "⬇️ Descargar PNG";
-                linkDescarga.style.display = "inline-block";
-                linkDescarga.style.marginTop = "12px";
-                linkDescarga.style.fontWeight = "bold";
-                linkDescarga.style.color = "#0d6efd";
-                linkDescarga.style.textDecoration = "underline";
-                linkDescarga.style.cursor = "pointer";
-
-                canvasTemp.toBlob((blob) => {
-                    if (!blob) {
-                        boton.disabled = false;
-                        boton.innerText = "🔄 Intentar de nuevo";
-                        boton.style.backgroundColor = "#0d6efd";
-                        return;
-                    }
-
-                    const blobUrl = URL.createObjectURL(blob);
-                    linkDescarga.href = blobUrl;
-                    linkDescarga.download = "Mapa_Correlatividades_INEL.png";
-                    imgExportada.src = blobUrl;
-
-                    contenedorImagen.appendChild(mensaje);
-                    contenedorImagen.appendChild(imgExportada);
-                    contenedorImagen.appendChild(linkDescarga);
-
-                    boton.innerText = "✅ Mapa listo";
-                    boton.disabled = false;
-                    boton.style.backgroundColor = "#198754";
-
-                    networkOculta.destroy();
-                }, "image/png");
-            }, 150);
-            return;
-        }
-
-        const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-        const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
-
-        const canvasTemp = document.createElement("canvas");
-        canvasTemp.width = anchoReal;
-        canvasTemp.height = altoReal;
-
-        const ctx = canvasTemp.getContext("2d");
-        ctx.fillStyle = "#fafafa";
-        ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-        const scale = networkOculta.getScale();
-        const pos = networkOculta.getViewPosition();
-
-        const canvasElement2 = contenedorOculto.querySelector("canvas");
-        if (canvasElement2) {
-            ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-            ctx.scale(scale, scale);
-            ctx.drawImage(canvasElement2, -canvasElement2.width / 2, -canvasElement2.height / 2);
-        }
-
-        const imgExportada = document.createElement("img");
-        imgExportada.style.width = "100%";
-        imgExportada.style.border = "3px solid #198754";
-        imgExportada.style.borderRadius = "8px";
-        imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-
-        const mensaje = document.createElement("p");
-        mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
-        mensaje.style.fontWeight = "bold";
-        mensaje.style.color = "#198754";
-        mensaje.style.marginTop = "15px";
-
-        const linkDescarga = document.createElement("a");
-        linkDescarga.textContent = "⬇️ Descargar PNG";
-        linkDescarga.style.display = "inline-block";
-        linkDescarga.style.marginTop = "12px";
-        linkDescarga.style.fontWeight = "bold";
-        linkDescarga.style.color = "#0d6efd";
-        linkDescarga.style.textDecoration = "underline";
-        linkDescarga.style.cursor = "pointer";
-
-        canvasTemp.toBlob((blob) => {
-            if (!blob) {
+            if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
                 boton.disabled = false;
                 boton.innerText = "🔄 Intentar de nuevo";
                 boton.style.backgroundColor = "#0d6efd";
                 return;
             }
 
-            const blobUrl = URL.createObjectURL(blob);
-            linkDescarga.href = blobUrl;
-            linkDescarga.download = "Mapa_Correlatividades_INEL.png";
-            imgExportada.src = blobUrl;
+            const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
+            const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
 
-            contenedorImagen.appendChild(mensaje);
-            contenedorImagen.appendChild(imgExportada);
-            contenedorImagen.appendChild(linkDescarga);
+            const canvasTemp = document.createElement("canvas");
+            canvasTemp.width = anchoReal;
+            canvasTemp.height = altoReal;
 
-            boton.innerText = "✅ Mapa listo";
+            const ctx = canvasTemp.getContext("2d");
+            ctx.fillStyle = "#fafafa";
+            ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+            const scale = networkOculta.getScale();
+            const pos = networkOculta.getViewPosition();
+
+            ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
+            ctx.scale(scale, scale);
+            ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
+
+            const imgExportada = document.createElement("img");
+            imgExportada.style.width = "100%";
+            imgExportada.style.border = "3px solid #198754";
+            imgExportada.style.borderRadius = "8px";
+            imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+            const mensaje = document.createElement("p");
+            mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
+            mensaje.style.fontWeight = "bold";
+            mensaje.style.color = "#198754";
+            mensaje.style.marginTop = "15px";
+
+            const linkDescarga = document.createElement("a");
+            linkDescarga.textContent = "⬇️ Descargar PNG";
+            linkDescarga.style.display = "inline-block";
+            linkDescarga.style.marginTop = "12px";
+            linkDescarga.style.fontWeight = "bold";
+            linkDescarga.style.color = "#0d6efd";
+            linkDescarga.style.textDecoration = "underline";
+            linkDescarga.style.cursor = "pointer";
+
+            canvasTemp.toBlob((blob) => {
+                if (!blob) {
+                    boton.disabled = false;
+                    boton.innerText = "🔄 Intentar de nuevo";
+                    boton.style.backgroundColor = "#0d6efd";
+                    return;
+                }
+
+                const blobUrl = URL.createObjectURL(blob);
+                linkDescarga.href = blobUrl;
+                linkDescarga.download = "Mapa_Correlatividades_INEL.png";
+                imgExportada.src = blobUrl;
+
+                contenedorImagen.appendChild(mensaje);
+                contenedorImagen.appendChild(imgExportada);
+                contenedorImagen.appendChild(linkDescarga);
+
+                boton.innerText = "✅ Mapa listo";
+                boton.disabled = false;
+                boton.style.backgroundColor = "#198754";
+
+                networkOculta.destroy();
+            }, "image/png");
+        }, 150);
+
+        return;
+    }
+
+    const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
+    const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
+
+    const canvasTemp = document.createElement("canvas");
+    canvasTemp.width = anchoReal;
+    canvasTemp.height = altoReal;
+
+    const ctx = canvasTemp.getContext("2d");
+    ctx.fillStyle = "#fafafa";
+    ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+    const scale = networkOculta.getScale();
+    const pos = networkOculta.getViewPosition();
+
+    ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
+    ctx.scale(scale, scale);
+    ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
+
+    const imgExportada = document.createElement("img");
+    imgExportada.style.width = "100%";
+    imgExportada.style.border = "3px solid #198754";
+    imgExportada.style.borderRadius = "8px";
+    imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+    const mensaje = document.createElement("p");
+    mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
+    mensaje.style.fontWeight = "bold";
+    mensaje.style.color = "#198754";
+    mensaje.style.marginTop = "15px";
+
+    const linkDescarga = document.createElement("a");
+    linkDescarga.textContent = "⬇️ Descargar PNG";
+    linkDescarga.style.display = "inline-block";
+    linkDescarga.style.marginTop = "12px";
+    linkDescarga.style.fontWeight = "bold";
+    linkDescarga.style.color = "#0d6efd";
+    linkDescarga.style.textDecoration = "underline";
+    linkDescarga.style.cursor = "pointer";
+
+    canvasTemp.toBlob((blob) => {
+        if (!blob) {
             boton.disabled = false;
-            boton.style.backgroundColor = "#198754";
+            boton.innerText = "🔄 Intentar de nuevo";
+            boton.style.backgroundColor = "#0d6efd";
+            return;
+        }
 
-            networkOculta.destroy();
-        }, "image/png");
-    });
+        const blobUrl = URL.createObjectURL(blob);
+        linkDescarga.href = blobUrl;
+        linkDescarga.download = "Mapa_Correlatividades_INEL.png";
+        imgExportada.src = blobUrl;
+
+        contenedorImagen.appendChild(mensaje);
+        contenedorImagen.appendChild(imgExportada);
+        contenedorImagen.appendChild(linkDescarga);
+
+        boton.innerText = "✅ Mapa listo";
+        boton.disabled = false;
+        boton.style.backgroundColor = "#198754";
+
+        networkOculta.destroy();
+    }, "image/png");
+});
 }
 
         window.addEventListener('load', calcular);
@@ -691,7 +686,7 @@
 
     <!-- TESTIGO DE VERSIÓN -->
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.7.2
+        Versión: 1.7.3
     </div>
 </body>
 </html>
