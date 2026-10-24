@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador Transición Plan INEL (Completo)</title>
+    <title>Simulador de transición INEL - UNM</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -158,7 +158,11 @@
     <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
-    <h1>Simulador Equivalencias INEL (2011 ➔ 2027)</h1>
+    <h1>Simulador Equivalencias INEL (2011 → 2027)</h1>
+    
+    <p style="text-align: center; color: #666; font-size: 0.9rem; margin: -10px 0 18px;">
+        Integradxs UNM - Primera Generación
+    </p>
 
     <div class="container">
         <div class="card">
@@ -643,7 +647,7 @@ function exportarMapa(network, contenedor, nodos, boton, contenedorImagen, falla
         const blobUrl = URL.createObjectURL(blob);
 
         const mensaje = document.createElement("p");
-        mensaje.innerText = "Mapa listo. Tocá el botón para descargarlo (o mantené presionada la imagen para guardarla).";
+        mensaje.innerText = "Mapa generado. Tocá el botón para descargarlo.";
         mensaje.style.fontWeight = "bold";
         mensaje.style.color = "#198754";
         mensaje.style.marginTop = "15px";
@@ -666,7 +670,7 @@ function exportarMapa(network, contenedor, nodos, boton, contenedorImagen, falla
         contenedorImagen.appendChild(img);
         contenedorImagen.appendChild(link);
 
-        boton.innerText = "Mapa listo (volver a generar)";
+        boton.innerText = "Volver a generar mapa";
         boton.disabled = false;
         boton.style.backgroundColor = "#198754";
 
@@ -679,7 +683,7 @@ function exportarMapa(network, contenedor, nodos, boton, contenedorImagen, falla
 
     <!-- TESTIGO DE VERSIÓN -->
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.7.7a
+        Versión: 1.7.7b
     </div>
 
     <!-- COMENTARIO: última version estable 24/10/2026 18:22 UTC+3 -->
