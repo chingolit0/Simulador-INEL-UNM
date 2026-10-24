@@ -155,7 +155,7 @@
         }
     </style>
 
-    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 </head>
 <body>
     <h1>Simulador Equivalencias INEL (2011 ➔ 2027)</h1>
@@ -475,16 +475,24 @@
     const contenedorOculto = document.getElementById('red-oculta');
     const contenedorImagen = document.getElementById('contenedor-imagen');
 
-    boton.innerText = "⏳ Dibujando mapa...";
+    boton.innerText = "Dibujando mapa...";
     boton.disabled = true;
     boton.style.backgroundColor = "#6c757d";
     contenedorImagen.innerHTML = "";
 
+    // Tamaño del canvas oculto, limitado según la densidad de píxeles
+    // (Safari/iOS falla con canvas de más de ~16 Mpx)
+    const dpr = window.devicePixelRatio || 1;
+    let W = 2500, H = 1500;
+    const k = Math.min(1, Math.sqrt(12e6 / (W * H * dpr * dpr)));
+    W = Math.floor(W * k);
+    H = Math.floor(H * k);
+
     contenedorOculto.style.position = "fixed";
     contenedorOculto.style.top = "0";
     contenedorOculto.style.left = "0";
-    contenedorOculto.style.width = "2500px";
-    contenedorOculto.style.height = "1500px";
+    contenedorOculto.style.width = W + "px";
+    contenedorOculto.style.height = H + "px";
     contenedorOculto.style.visibility = "visible";
     contenedorOculto.style.opacity = "0";
     contenedorOculto.style.pointerEvents = "none";
@@ -564,177 +572,110 @@
         options
     );
 
-    networkOculta.fit({ animation: false });
-
-    const exportarDesdeNetwork = () => {
-        const canvasElement = contenedorOculto.querySelector("canvas");
-        if (!canvasElement) {
-            boton.disabled = false;
-            boton.innerText = "🔄 Intentar de nuevo";
-            boton.style.backgroundColor = "#0d6efd";
-            return;
-        }
-
-        const box = networkOculta.getBoundingBox();
-
-        if (!box || typeof box.right === "undefined" || typeof box.left === "undefined" || typeof box.top === "undefined" || typeof box.bottom === "undefined") {
-            setTimeout(() => {
-                const retryBox = networkOculta.getBoundingBox();
-                if (!retryBox || typeof retryBox.right === "undefined" || typeof retryBox.left === "undefined" || typeof retryBox.top === "undefined" || typeof retryBox.bottom === "undefined") {
-                    boton.disabled = false;
-                    boton.innerText = "🔄 Intentar de nuevo";
-                    boton.style.backgroundColor = "#0d6efd";
-                    return;
-                }
-
-                generarExportDesdeBox(retryBox, canvasElement, networkOculta, boton, contenedorImagen);
-            }, 150);
-
-            return;
-        }
-
-        generarExportDesdeBox(box, canvasElement, networkOculta, boton, contenedorImagen);
+    const falla = (motivo) => {
+        console.error("Exportar mapa:", motivo);
+        boton.disabled = false;
+        boton.innerText = "Intentar de nuevo";
+        boton.style.backgroundColor = "#0d6efd";
+        try { networkOculta.destroy(); } catch (e) {}
+        contenedorImagen.innerHTML = '<p style="color:#dc3545;font-weight:bold;">No se pudo generar el mapa. Probá de nuevo.</p>';
     };
 
-    networkOculta.once("afterDrawing", exportarDesdeNetwork);
+    networkOculta.once("afterDrawing", () => {
+        try {
+            networkOculta.fit({ animation: false });
+            networkOculta.redraw();   // síncrono: el canvas ya queda con la vista ajustada
+            exportarMapa(networkOculta, contenedorOculto, nodosArray, boton, contenedorImagen, falla);
+        } catch (err) {
+            falla(err);
+        }
+    });
+
+    // Red de seguridad: si por algún motivo no se dibuja, no dejar el botón trabado
+    setTimeout(() => {
+        if (boton.disabled && boton.innerText.includes("Dibujando")) falla("timeout");
+    }, 10000);
 }
 
-function generarExportDesdeBox(box, canvasElement, networkOculta, boton, contenedorImagen) {
-    const anchoReal = Math.abs(box.right - box.left) + 120;
-    const altoReal = Math.abs(box.bottom - box.top) + 120;
+function exportarMapa(network, contenedor, nodos, boton, contenedorImagen, falla) {
+    const canvas = contenedor.querySelector("canvas");
+    if (!canvas) return falla("no hay canvas");
 
-    const canvasTemp = document.createElement("canvas");
-    canvasTemp.width = anchoReal;
-    canvasTemp.height = altoReal;
+    // getBoundingBox() EXIGE un nodeId: se calcula la unión de las cajas de todos los nodos
+    let L = Infinity, T = Infinity, R = -Infinity, B = -Infinity;
+    nodos.forEach(n => {
+        const b = network.getBoundingBox(n.id);
+        if (!b) return;
+        L = Math.min(L, b.left);
+        T = Math.min(T, b.top);
+        R = Math.max(R, b.right);
+        B = Math.max(B, b.bottom);
+    });
+    if (!isFinite(L)) return falla("no se pudo calcular el bounding box");
 
-    const ctx = canvasTemp.getContext("2d");
+    // Coordenadas de red -> píxeles del canvas (el canvas ya contiene la vista ajustada)
+    const tl = network.canvasToDOM({ x: L, y: T });
+    const br = network.canvasToDOM({ x: R, y: B });
+    const ratio = canvas.width / contenedor.clientWidth;
+    const pad = 40;
+
+    const sx = Math.max(0, Math.floor(tl.x * ratio - pad));
+    const sy = Math.max(0, Math.floor(tl.y * ratio - pad));
+    const sw = Math.min(canvas.width - sx, Math.ceil((br.x - tl.x) * ratio + 2 * pad));
+    const sh = Math.min(canvas.height - sy, Math.ceil((br.y - tl.y) * ratio + 2 * pad));
+    if (sw <= 0 || sh <= 0) return falla("recorte inválido");
+
+    const salida = document.createElement("canvas");
+    salida.width = sw;
+    salida.height = sh;
+    const ctx = salida.getContext("2d");
     ctx.fillStyle = "#fafafa";
-    ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+    ctx.fillRect(0, 0, sw, sh);
+    ctx.drawImage(canvas, sx, sy, sw, sh, 0, 0, sw, sh);
 
-    const scale = networkOculta.getScale();
-    const pos = networkOculta.getViewPosition();
-
-    ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-    ctx.scale(scale, scale);
-    ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
-
-    const imgExportada = document.createElement("img");
-    imgExportada.style.width = "100%";
-    imgExportada.style.border = "3px solid #198754";
-    imgExportada.style.borderRadius = "8px";
-    imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-
-    const mensaje = document.createElement("p");
-    mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
-    mensaje.style.fontWeight = "bold";
-    mensaje.style.color = "#198754";
-    mensaje.style.marginTop = "15px";
-
-    const linkDescarga = document.createElement("a");
-    linkDescarga.textContent = "⬇️ Descargar PNG";
-    linkDescarga.style.display = "inline-block";
-    linkDescarga.style.marginTop = "12px";
-    linkDescarga.style.fontWeight = "bold";
-    linkDescarga.style.color = "#0d6efd";
-    linkDescarga.style.textDecoration = "underline";
-    linkDescarga.style.cursor = "pointer";
-
-    canvasTemp.toBlob((blob) => {
-        if (!blob) {
-            boton.disabled = false;
-            boton.innerText = "🔄 Intentar de nuevo";
-            boton.style.backgroundColor = "#0d6efd";
-            return;
-        }
+    salida.toBlob((blob) => {
+        if (!blob) return falla("toBlob devolvió null");
 
         const blobUrl = URL.createObjectURL(blob);
-        linkDescarga.href = blobUrl;
-        linkDescarga.download = "Mapa_Correlatividades_INEL.png";
-        imgExportada.src = blobUrl;
 
+        const mensaje = document.createElement("p");
+        mensaje.innerText = "Mapa listo. Tocá el botón para descargarlo (o mantené presionada la imagen para guardarla).";
+        mensaje.style.fontWeight = "bold";
+        mensaje.style.color = "#198754";
+        mensaje.style.marginTop = "15px";
+
+        const img = document.createElement("img");
+        img.src = blobUrl;
+        img.style.width = "100%";
+        img.style.border = "3px solid #198754";
+        img.style.borderRadius = "8px";
+        img.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = "Mapa_Correlatividades_INEL.png";
+        link.textContent = "Descargar PNG";
+        link.style.cssText = "display:inline-block;margin-top:12px;padding:10px 18px;background:#198754;color:#fff;border-radius:8px;font-weight:bold;text-decoration:none;";
+
+        contenedorImagen.innerHTML = "";
         contenedorImagen.appendChild(mensaje);
-        contenedorImagen.appendChild(imgExportada);
-        contenedorImagen.appendChild(linkDescarga);
+        contenedorImagen.appendChild(img);
+        contenedorImagen.appendChild(link);
 
-        boton.innerText = "✅ Mapa listo";
+        boton.innerText = "Mapa listo (volver a generar)";
         boton.disabled = false;
         boton.style.backgroundColor = "#198754";
 
-        networkOculta.destroy();
+        network.destroy();
     }, "image/png");
 }
-
-        function generarExportDesdeBox(box, canvasElement, networkOculta, boton, contenedorImagen) {
-            const anchoReal = Math.abs(box.right - box.left) + 120;
-            const altoReal = Math.abs(box.bottom - box.top) + 120;
-
-            const canvasTemp = document.createElement("canvas");
-            canvasTemp.width = anchoReal;
-            canvasTemp.height = altoReal;
-
-            const ctx = canvasTemp.getContext("2d");
-            ctx.fillStyle = "#fafafa";
-            ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-            const scale = networkOculta.getScale();
-            const pos = networkOculta.getViewPosition();
-
-            ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-            ctx.scale(scale, scale);
-            ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
-
-            const imgExportada = document.createElement("img");
-            imgExportada.style.width = "100%";
-            imgExportada.style.border = "3px solid #198754";
-            imgExportada.style.borderRadius = "8px";
-            imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-
-            const mensaje = document.createElement("p");
-            mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
-            mensaje.style.fontWeight = "bold";
-            mensaje.style.color = "#198754";
-            mensaje.style.marginTop = "15px";
-
-            const linkDescarga = document.createElement("a");
-            linkDescarga.textContent = "⬇️ Descargar PNG";
-            linkDescarga.style.display = "inline-block";
-            linkDescarga.style.marginTop = "12px";
-            linkDescarga.style.fontWeight = "bold";
-            linkDescarga.style.color = "#0d6efd";
-            linkDescarga.style.textDecoration = "underline";
-            linkDescarga.style.cursor = "pointer";
-
-            canvasTemp.toBlob((blob) => {
-                if (!blob) {
-                    boton.disabled = false;
-                    boton.innerText = "🔄 Intentar de nuevo";
-                    boton.style.backgroundColor = "#0d6efd";
-                    return;
-                }
-
-                const blobUrl = URL.createObjectURL(blob);
-                linkDescarga.href = blobUrl;
-                linkDescarga.download = "Mapa_Correlatividades_INEL.png";
-                imgExportada.src = blobUrl;
-
-                contenedorImagen.appendChild(mensaje);
-                contenedorImagen.appendChild(imgExportada);
-                contenedorImagen.appendChild(linkDescarga);
-
-                boton.innerText = "✅ Mapa listo";
-                boton.disabled = false;
-                boton.style.backgroundColor = "#198754";
-
-                networkOculta.destroy();
-            }, "image/png");
-        }
 
         window.addEventListener('load', calcular);
     </script>
 
     <!-- TESTIGO DE VERSIÓN -->
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.7.5
+        Versión: 1.7.6
     </div>
 </body>
 </html>
