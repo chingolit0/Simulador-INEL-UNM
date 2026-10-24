@@ -5,76 +5,190 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador Transición Plan INEL (Completo)</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 15px; background-color: #f0f2f5; color: #333; }
-        h1 { font-size: 1.5rem; text-align: center; color: #0056b3; margin-bottom: 20px; }
-        .container { display: flex; flex-direction: column; gap: 20px; }
-        @media(min-width: 768px) { .container { flex-direction: row; } .card { flex: 1; } }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .card h2 { font-size: 1.2rem; border-bottom: 2px solid #0056b3; padding-bottom: 10px; margin-top: 0; color: #0056b3; }
-        
-        .materia { margin-bottom: 12px; display: flex; align-items: center; font-size: 0.9rem; }
-        .materia input[type="checkbox"] { transform: scale(1.4); margin-right: 12px; cursor: pointer; }
-        
-        .resultado { padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; font-size: 0.9rem; }
-        .resultado:last-child { border-bottom: none; }
-        .aprobada { color: #198754; font-weight: bold; background-color: #d1e7dd; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
-        .pendiente { color: #dc3545; font-weight: bold; background-color: #f8d7da; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
-        .anio-titulo { color: #555; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 25px; font-size: 1.1rem; }
-        
-/* ESTILOS PARA EL MAPA VISUAL */
-        .mapa-container { margin-top: 25px; overflow-x: auto; }
-        .mapa-grid { display: flex; gap: 15px; min-width: 600px; padding-bottom: 10px; }
-        .cuatrimestre { flex: 1; border: 1px solid #e0e0e0; border-radius: 8px; background: #fafafa; }
-        .cuatrimestre h3 { text-align: center; background: #4caf50; color: white; margin: 0 0 15px 0; padding: 10px; border-radius: 8px 8px 0 0; font-size: 1.1rem; }
-        .materia-box { border: 2px solid #0275d8; background: white; padding: 10px; margin: 0 10px 15px 10px; text-align: center; border-radius: 4px; font-size: 0.85rem; font-weight: bold; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; min-height: 40px; z-index: 2; position: relative; }
-    /* Colores dinámicos para las cajitas */
-        .box-aprobada { background-color: #d1e7dd; border-color: #0f5132; color: #0f5132; }
-        .box-pendiente { background-color: white; border-color: #6c757d; color: #6c757d; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 15px;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+
+            .card {
+                flex: 1;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            border-bottom: 2px solid #0056b3;
+            padding-bottom: 10px;
+            margin-top: 0;
+            color: #0056b3;
+        }
+
+        .materia {
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .materia input[type="checkbox"] {
+            transform: scale(1.4);
+            margin-right: 12px;
+            cursor: pointer;
+        }
+
+        .resultado {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
+
+        .resultado:last-child {
+            border-bottom: none;
+        }
+
+        .aprobada {
+            color: #198754;
+            font-weight: bold;
+            background-color: #d1e7dd;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .pendiente {
+            color: #dc3545;
+            font-weight: bold;
+            background-color: #f8d7da;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .anio-titulo {
+            color: #555;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            font-size: 1.1rem;
+        }
+
+        .mapa-container {
+            margin-top: 25px;
+            overflow-x: auto;
+        }
+
+        .mapa-grid {
+            display: flex;
+            gap: 15px;
+            min-width: 600px;
+            padding-bottom: 10px;
+        }
+
+        .cuatrimestre {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+
+        .cuatrimestre h3 {
+            text-align: center;
+            background: #4caf50;
+            color: white;
+            margin: 0 0 15px 0;
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            font-size: 1.1rem;
+        }
+
+        .materia-box {
+            border: 2px solid #0275d8;
+            background: white;
+            padding: 10px;
+            margin: 0 10px 15px 10px;
+            text-align: center;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .box-aprobada {
+            background-color: #d1e7dd;
+            border-color: #0f5132;
+            color: #0f5132;
+        }
+
+        .box-pendiente {
+            background-color: white;
+            border-color: #6c757d;
+            color: #6c757d;
+        }
     </style>
-    <!-- Librerías para el Grafo y para exportar a PNG -->
+
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
-
     <h1>Simulador Equivalencias INEL (2011 ➔ 2027)</h1>
-    
+
     <div class="container">
-        <!-- PLAN 2011 -->
         <div class="card">
             <h2>Mi Historia Académica (Plan 2011)</h2>
-            <div id="materias-2011">
-                <!-- Se generan dinámicamente con JS -->
-            </div>
+            <div id="materias-2011"></div>
         </div>
 
-        <!-- PLAN 2027 -->
         <div class="card">
             <h2>Equivalencias (Plan 2027)</h2>
-            <div id="materias-2027">
-                <!-- Se generan dinámicamente con JS -->
-            </div>
+            <div id="materias-2027"></div>
         </div>
     </div>
-    
-    <!-- GENERADOR DE MAPA (VERSIÓN ESTÁTICA) -->
+
     <div class="card mapa-container" style="text-align: center;">
         <h2>Exportar Mapa de Correlatividades</h2>
-        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Seleccioná tus materias en las tablas y presioná el botón para generar tu mapa en alta resolución.</p>
-        
-        <button id="btn-generar" onclick="generarMapa()" style="padding: 15px 25px; background-color: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold; width: 100%; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">
+            Seleccioná tus materias en las tablas y presioná el botón para generar tu mapa en alta resolución.
+        </p>
+
+        <button id="btn-generar" onclick="generarMapa()" style="padding: 15px 25px; background-color: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">
             ⚙️ Generar Mapa en PNG
         </button>
-        
-        <!-- Aquí aparecerá la imagen generada -->
+
         <div id="contenedor-imagen" style="margin-top: 25px;"></div>
-        
-        <!-- Área de trabajo oculta para Vis.js (2500x1500) -->
-        <div id="red-oculta" style="position: absolute; top: -9999px; left: -9999px; width: 2500px; height: 1500px; z-index: -9999;"></div>
+
+        <div id="red-oculta" style="position: fixed; top: 0; left: 0; width: 2500px; height: 1500px; opacity: 0; pointer-events: none; visibility: hidden; z-index: -1;"></div>
     </div>
-    
+
     <script>
-        // 1. DICCIONARIO DE MATERIAS PLAN 2011
         const materias2011 = [
             { id: "2011", nombre: "Álgebra y Geometría Analítica", separador: "Primer Año" },
             { id: "2012", nombre: "Análisis Matemático I" },
@@ -112,7 +226,7 @@
             { id: "2045R", nombre: "Sistemas de Comunicaciones I" },
             { id: "2053R", nombre: "Redes IIB" },
             { id: "2062R", nombre: "Sistemas Distribuidos" },
-            { id: "2064R", nombre: "Redes III"},
+            { id: "2064R", nombre: "Redes III" },
             { id: "2071RM", nombre: "Tratamiento Digital de Señales" },
             { id: "2072R", nombre: "Antenas y Propagación" },
             { id: "2073R", nombre: "Sistemas de Comunicación II" },
@@ -125,7 +239,7 @@
             { id: "2045M", nombre: "Sistema de Video I" },
             { id: "2053M", nombre: "Sistemas de Video II" },
             { id: "2062M", nombre: "Televisión Digital" },
-            { id: "2064M", nombre: "Ruido Acústico"},
+            { id: "2064M", nombre: "Ruido Acústico" },
             { id: "2072M", nombre: "Mastering y Post prod. de sonido" },
             { id: "2073M", nombre: "Electroacústica" },
             { id: "2074M", nombre: "Sonido en vivo" },
@@ -137,7 +251,7 @@
             { id: "2045A", nombre: "Electrónica Aplicada al Agro" },
             { id: "2053A", nombre: "Sistema de Posicionamiento Satelital" },
             { id: "2062A", nombre: "Sensores y Buses de Comunicación" },
-            { id: "2064A", nombre: "Diseño de Dispositivos para Uso Agropecuario"},
+            { id: "2064A", nombre: "Diseño de Dispositivos para Uso Agropecuario" },
             { id: "2071A", nombre: "Sistemas para Agro Meteorología" },
             { id: "2072A", nombre: "Electrónica Aplicada a la Ganaderia de Precisión" },
             { id: "2073A", nombre: "Sistemas de Teledetección" },
@@ -145,21 +259,20 @@
             { id: "2075A", nombre: "Sistemas Electrónicos para Producciones Regionales" }
         ];
 
-                // DIBUJAR INPUTS DEL PLAN 2011
         const contenedor2011 = document.getElementById('materias-2011');
-        let grupoActual = ""; // Variable para agrupar las materias por año
+        let grupoActual = "";
 
         materias2011.forEach(mat => {
             if (mat.separador) {
-                // Creamos un identificador sin espacios (ej: "PrimerAño")
                 grupoActual = mat.separador.replace(/\s+/g, '');
                 contenedor2011.innerHTML += `
                     <div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 25px; border-bottom: 1px solid #ccc; padding-bottom: 5px;">
                         <h3 class="anio-titulo" style="margin: 0; border: none; padding: 0;">${mat.separador}</h3>
-                        <button onclick="seleccionarGrupo('${grupoActual}', this)" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #0056b3; background: transparent; color: #0056b3; cursor: pointer; font-weight: bold;">Marcar todo</button>
+                        <button onclick="seleccionarGrupo('${grupoActual}', this)" style="font-size: 0.75rem; padding: 4px 8px; border-radius: 4px; border: 1px solid #0056b3; background: transparent; color: #0056b3; cursor: pointer;">
+                            Marcar todo
+                        </button>
                     </div>
                 `;
-                
             }
             contenedor2011.innerHTML += `
                 <div class="materia">
@@ -169,21 +282,16 @@
             `;
         });
 
-
-        // 2. DICCIONARIO MATERIAS PLAN 2027
-        // Función para tildar/destildar materias por bloque y cambiar texto del botón
         function seleccionarGrupo(grupo, botonElemento) {
             let checkboxes = document.querySelectorAll('.grupo-' + grupo);
-            // Verificamos si ya están todos marcados para hacer el efecto inverso
             let todosMarcados = Array.from(checkboxes).every(chk => chk.checked);
             checkboxes.forEach(chk => chk.checked = !todosMarcados);
-            
-            // Cambiar el texto del botón
+
             if (botonElemento) {
                 botonElemento.innerText = todosMarcados ? "Marcar todo" : "Desmarcar";
             }
-            
-            calcular(); // Recalculamos el mapa al terminar
+
+            calcular();
         }
 
         const materias2027 = [
@@ -239,7 +347,6 @@
             { id: "200502", nombre: "ELECTIVA 4" }
         ];
 
-        // DIBUJAR OUTPUTS DEL PLAN 2027
         const contenedor2027 = document.getElementById('materias-2027');
         materias2027.forEach(mat => {
             if (mat.separador) {
@@ -253,64 +360,56 @@
             `;
         });
 
-        // 3. MAPA DE CORRELATIVIDADES (Flechas)
-        // DICCIONARIO DE COLORES POR ÁREA EPISTÉMICA
         const coloresMapa = {
-            "200110": "#0275d8", "200115": "#0275d8", "200116": "#0275d8", "200210": "#0275d8", "200215": "#0275d8", "200310": "#0275d8", // Matemática
-            "200111": "#fd7e14", "200117": "#fd7e14", "200211": "#fd7e14", // Física
-            "200112": "#198754", "200118": "#198754", "200213": "#198754", "200216": "#198754", "200217": "#198754", "200218": "#198754", "200311": "#198754", "200312": "#198754", "200313": "#198754", "200315": "#198754", "200411": "#198754", "200414": "#198754", // Tec. Básica
-            "200219": "#84cc16", "200316": "#84cc16", "200416": "#84cc16", // Digital
-            "200113": "#6f42c1", "200212": "#6f42c1", "200314": "#6f42c1", "200410": "#6f42c1", "200415": "#6f42c1", // Informática
-            "200317": "#d63384", "200318": "#d63384", "200412": "#d63384", // Comunicaciones
-            "200319": "#dc3545", "200413": "#dc3545", "200417": "#dc3545", // Automatización
-            "200114": "#0dcaf0", "200119": "#0dcaf0", "200514": "#0dcaf0", // Idiomas
-            "200214": "#ffc107", "200220": "#ffc107", "200510": "#ffc107", "200511": "#ffc107", "200512": "#ffc107", "200513": "#ffc107", "200515": "#ffc107", "200516": "#ffc107" // Práctica/Sociales
+            "200110": "#0275d8", "200115": "#0275d8", "200116": "#0275d8", "200210": "#0275d8", "200215": "#0275d8", "200310": "#0275d8",
+            "200111": "#fd7e14", "200117": "#fd7e14", "200211": "#fd7e14",
+            "200112": "#198754", "200118": "#198754", "200213": "#198754", "200216": "#198754", "200217": "#198754", "200218": "#198754", "200311": "#198754", "200312": "#198754", "200313": "#198754",
+            "200219": "#84cc16", "200316": "#84cc16", "200416": "#84cc16",
+            "200113": "#6f42c1", "200212": "#6f42c1", "200314": "#6f42c1", "200410": "#6f42c1", "200415": "#6f42c1",
+            "200317": "#d63384", "200318": "#d63384", "200412": "#d63384",
+            "200319": "#dc3545", "200413": "#dc3545", "200417": "#dc3545",
+            "200114": "#0dcaf0", "200119": "#0dcaf0", "200514": "#0dcaf0",
+            "200214": "#ffc107", "200220": "#ffc107", "200510": "#ffc107", "200511": "#ffc107", "200512": "#ffc107", "200513": "#ffc107", "200515": "#ffc107", "200516": "#ffc107"
         };
 
-        // RELACIONES (Flechas)
         const flechasData = [
-            // --- FLECHAS REALES DE CORRELATIVIDAD ---
-            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, { from: '200111', to: '200117' }, 
-            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, { from: '200114', to: '200119' }, 
-            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, { from: '200116', to: '200211' }, 
-            { from: '200117', to: '200211' }, { from: '200113', to: '200212' }, { from: '200112', to: '200213' }, 
-            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, { from: '200112', to: '200217' }, 
-            { from: '200111', to: '200217' }, { from: '200211', to: '200218' }, { from: '200213', to: '200218' }, 
-            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, { from: '200215', to: '200310' }, 
-            { from: '200216', to: '200310' }, { from: '200216', to: '200311' }, { from: '200217', to: '200311' }, 
-            { from: '200218', to: '200312' }, { from: '200211', to: '200313' }, { from: '200312', to: '200315' }, 
-            { from: '200311', to: '200315' }, { from: '200219', to: '200316' }, { from: '200313', to: '200317' }, 
-            { from: '200310', to: '200317' }, { from: '200219', to: '200318' }, { from: '200217', to: '200319' }, 
-            { from: '200218', to: '200319' }, { from: '200310', to: '200410' }, { from: '200212', to: '200410' }, 
-            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, { from: '200317', to: '200412' }, 
-            { from: '200318', to: '200412' }, { from: '200319', to: '200413' }, { from: '200211', to: '200414' }, 
-            { from: '200410', to: '200415' }, { from: '200316', to: '200416' }, { from: '200413', to: '200417' }, 
-            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, { from: '200412', to: '200516' }, 
-            { from: '200413', to: '200516' },
-            // --- HILOS INVISIBLES (ANCLAJES) ---
-            { from: '200110', to: '200114', invisible: true }, // Ancla Inglés 1
-            { from: '200115', to: '200214', invisible: true }, // Ancla Química
-            { from: '200210', to: '200220', invisible: true }, // Ancla Ing y Sociedad
-            { from: '200215', to: '200314', invisible: true }, // Ancla Dibujo PC
-            { from: '200315', to: '200401', invisible: true }, // Ancla Electiva 1
-            { from: '200414', to: '200501', invisible: true }, // Ancla Electiva 3
-            { from: '200414', to: '200402', invisible: true }, // Ancla Electiva 2
-            { from: '200510', to: '200511', invisible: true }, // Ancla Economía
-            { from: '200510', to: '200512', invisible: true }, // Ancla Seguridad
-            { from: '200510', to: '200513', invisible: true }, // Ancla Legislación
-            { from: '200510', to: '200514', invisible: true }, // Ancla Inglés 3
-            { from: '200510', to: '200515', invisible: true }, // Ancla Práctica PPS
-            { from: '200516', to: '200502', invisible: true }  // Ancla Electiva 4
+            { from: '200110', to: '200115' }, { from: '200110', to: '200116' }, { from: '200111', to: '200117' },
+            { from: '200112', to: '200118' }, { from: '200113', to: '200118' }, { from: '200114', to: '200119' },
+            { from: '200115', to: '200210' }, { from: '200116', to: '200210' }, { from: '200116', to: '200211' },
+            { from: '200117', to: '200211' }, { from: '200113', to: '200212' }, { from: '200112', to: '200213' },
+            { from: '200210', to: '200215' }, { from: '200210', to: '200216' }, { from: '200112', to: '200217' },
+            { from: '200111', to: '200217' }, { from: '200211', to: '200218' }, { from: '200213', to: '200218' },
+            { from: '200118', to: '200219' }, { from: '200212', to: '200219' }, { from: '200215', to: '200310' },
+            { from: '200216', to: '200310' }, { from: '200216', to: '200311' }, { from: '200217', to: '200311' },
+            { from: '200218', to: '200312' }, { from: '200211', to: '200313' }, { from: '200312', to: '200315' },
+            { from: '200311', to: '200315' }, { from: '200219', to: '200316' }, { from: '200313', to: '200317' },
+            { from: '200310', to: '200317' }, { from: '200219', to: '200318' }, { from: '200217', to: '200319' },
+            { from: '200218', to: '200319' }, { from: '200310', to: '200410' }, { from: '200212', to: '200410' },
+            { from: '200311', to: '200411' }, { from: '200312', to: '200411' }, { from: '200317', to: '200412' },
+            { from: '200318', to: '200412' }, { from: '200319', to: '200413' }, { from: '200211', to: '200414' },
+            { from: '200410', to: '200415' }, { from: '200316', to: '200416' }, { from: '200413', to: '200417' },
+            { from: '200412', to: '200510' }, { from: '200413', to: '200510' }, { from: '200412', to: '200516' }, { from: '200413', to: '200516' },
+            { from: '200110', to: '200114', invisible: true },
+            { from: '200115', to: '200214', invisible: true },
+            { from: '200210', to: '200220', invisible: true },
+            { from: '200215', to: '200314', invisible: true },
+            { from: '200315', to: '200401', invisible: true },
+            { from: '200414', to: '200501', invisible: true },
+            { from: '200414', to: '200402', invisible: true },
+            { from: '200510', to: '200511', invisible: true },
+            { from: '200510', to: '200512', invisible: true },
+            { from: '200510', to: '200513', invisible: true },
+            { from: '200510', to: '200514', invisible: true },
+            { from: '200510', to: '200515', invisible: true },
+            { from: '200516', to: '200502', invisible: true }
         ];
 
-        // 4. FUNCIÓN DE CÁLCULO PRINCIPAL (Solo textos, sin gráficos)
         function calcular() {
             const val = (id) => {
                 let elemento = document.getElementById(id);
                 return elemento ? elemento.checked : false;
             };
 
-            // REGLAS DE EQUIVALENCIA
             window.resultadosGlobales = {
                 "200110": val('2011') || val('2012'), "200111": val('2013'), "200112": val('2014'), "200113": val('2015'),
                 "200114": val('2016'), "200115": val('2011') && val('2012'), "200116": val('2021'), "200117": val('2013'),
@@ -324,10 +423,10 @@
                 "200412": val('2074R'), "200413": val('2051'), "200414": val('2022'), "200415": val('2043R'),
                 "200416": val('2071RM'), "200417": val('2051'),
                 "200402": (val('2017R') && val('2028R')) || (val('2017M') && val('2028M')) || (val('2017A') && val('2028A')),
-                "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') &&  val('2028A') && val('2037A')),
+                "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') && val('2028A') && val('2037A')),
                 "200510": val('2052'), "200511": val('2061'), "200512": val('2054'), "200513": val('2063'),
                 "200515": val('2080'), "200516": val('2052'),
-                "200502": (val('2017R') && val('2028R') && val('2037R') && val('2043R')) || (val('2017M') && val('2028M') && val('2037M') && val('2043M')) || (val('2017A') &&  val('2028A') && val('2037A') && val('2043A'))
+                "200502": (val('2017R') && val('2028R') && val('2037R') && val('2043R')) || (val('2017M') && val('2028M') && val('2037M') && val('2043M')) || (val('2017A') && val('2028A') && val('2037A') && val('2043A'))
             };
 
             for (let id in window.resultadosGlobales) {
@@ -339,119 +438,174 @@
             }
         }
 
-        // 5. FUNCIÓN GENERADORA DE IMAGEN (OFF-SCREEN)
         function generarMapa() {
-            let boton = document.getElementById('btn-generar');
-            let contenedorOculto = document.getElementById('red-oculta');
-            let contenedorImagen = document.getElementById('contenedor-imagen');
-            
-            boton.innerText = "⏳ Dibujando mapa...";
+            const boton = document.getElementById('btn-generar');
+            const contenedorOculto = document.getElementById('red-oculta');
+            const contenedorImagen = document.getElementById('contenedor-imagen');
+
+            boton.innerText = '⏳ Dibujando mapa...';
             boton.disabled = true;
-            boton.style.backgroundColor = "#6c757d";
-            contenedorImagen.innerHTML = "";
+            boton.style.backgroundColor = '#6c757d';
+            contenedorImagen.innerHTML = '';
+
+            contenedorOculto.style.visibility = 'visible';
+            contenedorOculto.style.opacity = '0';
+            contenedorOculto.style.pointerEvents = 'none';
 
             let nodosArray = [];
             let cuatrimestreActual = 1;
 
             materias2027.forEach(mat => {
-                if (mat.separador) cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
-                let estaAprobada = window.resultadosGlobales[mat.id];
-                let colorArea = coloresMapa[mat.id] || "#555555"; 
+                if (mat.separador) {
+                    cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
+                }
+
+                const estaAprobada = !!window.resultadosGlobales?.[mat.id];
+                const colorArea = coloresMapa[mat.id] || '#555555';
 
                 nodosArray.push({
-                    id: mat.id, label: mat.nombre, level: cuatrimestreActual, shape: 'box',
-                    color: { background: estaAprobada ? colorArea : '#ffffff', border: estaAprobada ? colorArea : '#aaaaaa' },
-                    font: { color: estaAprobada ? '#ffffff' : '#333333', face: 'Segoe UI', size: 14 },
+                    id: mat.id,
+                    label: mat.nombre,
+                    level: cuatrimestreActual,
+                    shape: 'box',
+                    color: {
+                        background: estaAprobada ? colorArea : '#ffffff',
+                        border: estaAprobada ? colorArea : '#aaaaaa'
+                    },
+                    font: {
+                        color: estaAprobada ? '#ffffff' : '#333333',
+                        face: 'Segoe UI',
+                        size: 14
+                    },
                     borderWidth: estaAprobada ? 0 : 2
                 });
             });
 
-            let edgesArray = flechasData.map(rel => {
-                let estaAprobada = window.resultadosGlobales[rel.from];
+            const edgesArray = flechasData.map(rel => {
+                const estaAprobada = !!window.resultadosGlobales?.[rel.from];
                 return {
-                    from: rel.from, to: rel.to, arrows: 'to',
-                    color: { color: rel.invisible ? 'transparent' : (estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc'), opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6) },
+                    from: rel.from,
+                    to: rel.to,
+                    arrows: 'to',
+                    color: {
+                        color: rel.invisible ? 'transparent' : (estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc'),
+                        opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6)
+                    },
                     width: rel.invisible ? 0 : (estaAprobada ? 3 : 1)
                 };
             });
 
-            let options = {
-                layout: { hierarchical: { enabled: true, direction: 'LR', levelSeparation: 280, nodeSpacing: 70, treeSpacing: 70, blockShifting: true, edgeMinimization: true, parentCentralization: false, sortMethod: 'directed' } },
+            const options = {
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        direction: 'LR',
+                        levelSeparation: 280,
+                        nodeSpacing: 70,
+                        treeSpacing: 70,
+                        blockShifting: true,
+                        edgeMinimization: true,
+                        parentCentralization: true
+                    }
+                },
                 physics: { enabled: false },
-                edges: { smooth: { type: 'cubicBezier', forceDirection: 'horizontal', roundness: 0.5 } }
+                edges: {
+                    smooth: {
+                        type: 'cubicBezier',
+                        forceDirection: 'horizontal',
+                        roundness: 0.5
+                    }
+                }
             };
 
-            let networkOculta = new vis.Network(contenedorOculto, { nodes: nodosArray, edges: edgesArray }, options);
+            const networkOculta = new vis.Network(contenedorOculto, { nodes: nodosArray, edges: edgesArray }, options);
 
-            // Obligamos al motor a acomodar las posiciones en el lienzo antes de la foto
-            networkOculta.fit({ animation: false });
+            networkOculta.once('afterDrawing', () => {
+                const canvasElement = contenedorOculto.querySelector('canvas');
+                if (!canvasElement) {
+                    boton.disabled = false;
+                    boton.innerText = '🔄 Intentar de nuevo';
+                    boton.style.backgroundColor = '#0d6efd';
+                    return;
+                }
 
-            networkOculta.once('afterDrawing', function() {
-                // Breve pausa para asegurar el renderizado en móviles
-                setTimeout(() => {
-                    const canvasElement = contenedorOculto.querySelector('canvas');
-                    const canvasTemp = document.createElement('canvas');
-                    
-                    const boundingBox = networkOculta.getBoundingBox();
-                    const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-                    const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
-                    
-                    canvasTemp.width = anchoReal;
-                    canvasTemp.height = altoReal;
-                    const ctx = canvasTemp.getContext('2d');
-                    
-                    ctx.fillStyle = '#fafafa';
-                    ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-                    
-                    const scale = networkOculta.getScale();
-                    const pos = networkOculta.getViewPosition();
-                    ctx.translate(canvasTemp.width/2 - pos.x * scale, canvasTemp.height/2 - pos.y * scale);
-                    ctx.scale(scale, scale);
-                    ctx.drawImage(canvasElement, -canvasElement.width/2, -canvasElement.height/2);
+                const canvasTemp = document.createElement('canvas');
+                const boundingBox = networkOculta.getBoundingBox();
+                const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
+                const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
 
-                    const dataURL = canvasTemp.toDataURL('image/png');
+                canvasTemp.width = anchoReal;
+                canvasTemp.height = altoReal;
 
-                    // 1. Forzar la descarga del archivo (Funciona en PC y en la mayoría de Android)
-                    let linkDescarga = document.createElement('a');
-                    linkDescarga.download = 'Mapa_Correlatividades_INEL.png';
-                    linkDescarga.href = dataURL;
-                    document.body.appendChild(linkDescarga);
-                    linkDescarga.click();
-                    document.body.removeChild(linkDescarga);
+                const ctx = canvasTemp.getContext('2d');
+                ctx.fillStyle = '#fafafa';
+                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
 
-                    // 2. Mostrar la imagen como respaldo visual
-                    let imgExportada = document.createElement('img');
-                    imgExportada.src = dataURL;
-                    imgExportada.style.width = '100%';
-                    imgExportada.style.border = '3px solid #198754';
-                    imgExportada.style.borderRadius = '8px';
-                    imgExportada.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                const scale = networkOculta.getScale();
+                const pos = networkOculta.getViewPosition();
+                ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
+                ctx.scale(scale, scale);
+                ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
 
-                    let mensaje = document.createElement('p');
-                    mensaje.innerText = "✅ Descarga iniciada. Si tu celular la bloqueó, mantené apretada esta imagen para guardarla.";
-                    mensaje.style.fontWeight = "bold";
-                    mensaje.style.color = "#198754";
-                    mensaje.style.marginTop = "15px";
+                const imgExportada = document.createElement('img');
+                imgExportada.style.width = '100%';
+                imgExportada.style.border = '3px solid #198754';
+                imgExportada.style.borderRadius = '8px';
+                imgExportada.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+
+                const mensaje = document.createElement('p');
+                mensaje.innerText = '✅ ¡Listo! Mantené apretada la imagen para guardarla en Fotos.';
+                mensaje.style.fontWeight = 'bold';
+                mensaje.style.color = '#198754';
+                mensaje.style.marginTop = '15px';
+
+                const fallbackLink = document.createElement('a');
+                fallbackLink.textContent = '⬇️ Descargar PNG';
+                fallbackLink.style.display = 'inline-block';
+                fallbackLink.style.marginTop = '12px';
+                fallbackLink.style.fontWeight = 'bold';
+                fallbackLink.style.color = '#0d6efd';
+                fallbackLink.style.textDecoration = 'underline';
+
+                let downloadUrl = '';
+
+                const finalizeDownload = () => {
+                    if (downloadUrl) {
+                        imgExportada.src = downloadUrl;
+                    }
 
                     contenedorImagen.appendChild(mensaje);
                     contenedorImagen.appendChild(imgExportada);
+                    contenedorImagen.appendChild(fallbackLink);
 
-                    boton.innerText = "⚙️ Generar Mapa en PNG";
+                    boton.innerText = '✅ Mapa listo';
                     boton.disabled = false;
-                    boton.style.backgroundColor = "#0d6efd";
+                    boton.style.backgroundColor = '#198754';
                     networkOculta.destroy();
-                }, 300);
+                };
+
+                canvasTemp.toBlob((blob) => {
+                    if (blob) {
+                        downloadUrl = URL.createObjectURL(blob);
+                        fallbackLink.href = downloadUrl;
+                        fallbackLink.download = 'Mapa_Correlatividades_INEL.png';
+
+                        try {
+                            fallbackLink.click();
+                        } catch (error) {
+                            // El navegador bloquea la descarga automática; el usuario puede insistir manualmente con el link.
+                        }
+
+                        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1500);
+                    }
+
+                    imgExportada.src = canvasTemp.toDataURL('image/png');
+                    finalizeDownload();
+                }, 'image/png');
             });
         }
+
         window.addEventListener('load', calcular);
     </script>
-    
-    <!-- TESTIGO -->
-    <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.5.1
-    </div>
-    
-</body>
-</html>
 </body>
 </html>
