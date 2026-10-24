@@ -179,8 +179,8 @@
         </p>
 
         <button id="btn-generar" onclick="generarMapa()" style="padding: 15px 25px; background-color: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1.1rem; font-weight: bold;">
-    Generar vista previa
-</button>
+            Generar vista previa
+        </button>
 
         <div id="contenedor-imagen" style="margin-top: 25px;"></div>
 
@@ -273,6 +273,7 @@
                     </div>
                 `;
             }
+
             contenedor2011.innerHTML += `
                 <div class="materia">
                     <input type="checkbox" id="${mat.id}" class="grupo-${grupoActual}" onchange="calcular()">
@@ -410,21 +411,53 @@
             };
 
             window.resultadosGlobales = {
-                "200110": val('2011') || val('2012'), "200111": val('2013'), "200112": val('2014'), "200113": val('2015'),
-                "200114": val('2016'), "200115": val('2011') && val('2012'), "200116": val('2021'), "200117": val('2013'),
-                "200118": val('2023'), "200119": val('2026'), "200210": val('2021'), "200211": val('2022'),
-                "200212": val('2025'), "200213": val('2024'), "200214": val('2014'), "200215": val('2021'),
-                "200216": val('2031'), "200217": val('2032'), "200218": val('2033'), "200219": val('2034'),
-                "200220": val('2046'), "200310": val('2027'), "200311": val('2032') && val('2041'), "200312": val('2042'),
-                "200313": val('2044'), "200314": val('2036'), "200315": val('2042'), "200316": val('2034'),
-                "200317": val('2045R'), "200318": val('2017R') && val('2028R') && val('2037R'),
-                "200401": val('2017R') || val('2017M') || val('2017A'), "200410": val('2043R'), "200411": val('2035'),
-                "200412": val('2074R'), "200413": val('2051'), "200414": val('2022'), "200415": val('2043R'),
-                "200416": val('2071RM'), "200417": val('2051'),
+                "200110": val('2011') || val('2012'),
+                "200111": val('2013'),
+                "200112": val('2014'),
+                "200113": val('2015'),
+                "200114": val('2016'),
+                "200115": val('2011') && val('2012'),
+                "200116": val('2021'),
+                "200117": val('2013'),
+                "200118": val('2023'),
+                "200119": val('2026'),
+                "200210": val('2021'),
+                "200211": val('2022'),
+                "200212": val('2025'),
+                "200213": val('2024'),
+                "200214": val('2014'),
+                "200215": val('2021'),
+                "200216": val('2031'),
+                "200217": val('2032'),
+                "200218": val('2033'),
+                "200219": val('2034'),
+                "200220": val('2046'),
+                "200310": val('2027'),
+                "200311": val('2032') && val('2041'),
+                "200312": val('2042'),
+                "200313": val('2044'),
+                "200314": val('2036'),
+                "200315": val('2042'),
+                "200316": val('2034'),
+                "200317": val('2045R'),
+                "200318": val('2017R') && val('2028R') && val('2037R'),
+                "200401": val('2017R') || val('2017M') || val('2017A'),
+                "200410": val('2043R'),
+                "200411": val('2035'),
+                "200412": val('2074R'),
+                "200413": val('2051'),
+                "200414": val('2022'),
+                "200415": val('2043R'),
+                "200416": val('2071RM'),
+                "200417": val('2051'),
                 "200402": (val('2017R') && val('2028R')) || (val('2017M') && val('2028M')) || (val('2017A') && val('2028A')),
                 "200501": (val('2017R') && val('2028R') && val('2037R')) || (val('2017M') && val('2028M') && val('2037M')) || (val('2017A') && val('2028A') && val('2037A')),
-                "200510": val('2052'), "200511": val('2061'), "200512": val('2054'), "200513": val('2063'),
-                "200515": val('2080'), "200516": val('2052'),
+                "200510": val('2052'),
+                "200511": val('2061'),
+                "200512": val('2054'),
+                "200513": val('2063'),
+                "200515": val('2080'),
+                "200516": val('2052'),
                 "200502": (val('2017R') && val('2028R') && val('2037R') && val('2043R')) || (val('2017M') && val('2028M') && val('2037M') && val('2043M')) || (val('2017A') && val('2028A') && val('2037A') && val('2043A'))
             };
 
@@ -438,119 +471,137 @@
         }
 
         function generarMapa() {
-    const boton = document.getElementById('btn-generar');
-    const contenedorOculto = document.getElementById('red-oculta');
-    const contenedorImagen = document.getElementById('contenedor-imagen');
+            const boton = document.getElementById('btn-generar');
+            const contenedorOculto = document.getElementById('red-oculta');
+            const contenedorImagen = document.getElementById('contenedor-imagen');
 
-    boton.innerText = "⏳ Dibujando mapa...";
-    boton.disabled = true;
-    boton.style.backgroundColor = "#6c757d";
-    contenedorImagen.innerHTML = "";
+            boton.innerText = "⏳ Dibujando mapa...";
+            boton.disabled = true;
+            boton.style.backgroundColor = "#6c757d";
+            contenedorImagen.innerHTML = "";
 
-    const nodosArray = [];
-    let cuatrimestreActual = 1;
+            contenedorOculto.style.position = "fixed";
+            contenedorOculto.style.top = "0";
+            contenedorOculto.style.left = "0";
+            contenedorOculto.style.width = "2500px";
+            contenedorOculto.style.height = "1500px";
+            contenedorOculto.style.visibility = "visible";
+            contenedorOculto.style.opacity = "0";
+            contenedorOculto.style.pointerEvents = "none";
+            contenedorOculto.style.zIndex = "-1";
 
-    materias2027.forEach(mat => {
-        if (mat.separador) {
-            cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
+            const nodosArray = [];
+            let cuatrimestreActual = 1;
+
+            materias2027.forEach(mat => {
+                if (mat.separador) {
+                    cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
+                }
+
+                const estaAprobada = !!window.resultadosGlobales?.[mat.id];
+                const colorArea = coloresMapa[mat.id] || "#555555";
+
+                nodosArray.push({
+                    id: mat.id,
+                    label: mat.nombre,
+                    level: cuatrimestreActual,
+                    shape: "box",
+                    color: {
+                        background: estaAprobada ? colorArea : "#ffffff",
+                        border: estaAprobada ? colorArea : "#aaaaaa"
+                    },
+                    font: {
+                        color: estaAprobada ? "#ffffff" : "#333333",
+                        face: "Segoe UI",
+                        size: 14
+                    },
+                    borderWidth: estaAprobada ? 0 : 2
+                });
+            });
+
+            const edgesArray = flechasData.map(rel => {
+                const estaAprobada = !!window.resultadosGlobales?.[rel.from];
+                return {
+                    from: rel.from,
+                    to: rel.to,
+                    arrows: "to",
+                    color: {
+                        color: rel.invisible
+                            ? "transparent"
+                            : (estaAprobada ? (coloresMapa[rel.from] || "#333") : "#cccccc"),
+                        opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6)
+                    },
+                    width: rel.invisible ? 0 : (estaAprobada ? 3 : 1)
+                };
+            });
+
+            const options = {
+                layout: {
+                    hierarchical: {
+                        enabled: true,
+                        direction: "LR",
+                        levelSeparation: 280,
+                        nodeSpacing: 70,
+                        treeSpacing: 70,
+                        blockShifting: true,
+                        edgeMinimization: true,
+                        parentCentralization: true
+                    }
+                },
+                physics: { enabled: false },
+                edges: {
+                    smooth: {
+                        type: "cubicBezier",
+                        forceDirection: "horizontal",
+                        roundness: 0.5
+                    }
+                }
+            };
+
+            const networkOculta = new vis.Network(
+                contenedorOculto,
+                { nodes: nodosArray, edges: edgesArray },
+                options
+            );
+
+            networkOculta.fit({ animation: false });
+
+            const exportarDesdeNetwork = () => {
+                const canvasElement = contenedorOculto.querySelector("canvas");
+                if (!canvasElement) {
+                    boton.disabled = false;
+                    boton.innerText = "🔄 Intentar de nuevo";
+                    boton.style.backgroundColor = "#0d6efd";
+                    return;
+                }
+
+                const box = networkOculta.getBoundingBox();
+
+                if (!box || typeof box.right === "undefined" || typeof box.left === "undefined" || typeof box.top === "undefined" || typeof box.bottom === "undefined") {
+                    setTimeout(() => {
+                        const retryBox = networkOculta.getBoundingBox();
+                        if (!retryBox || typeof retryBox.right === "undefined" || typeof retryBox.left === "undefined" || typeof retryBox.top === "undefined" || typeof retryBox.bottom === "undefined") {
+                            boton.disabled = false;
+                            boton.innerText = "🔄 Intentar de nuevo";
+                            boton.style.backgroundColor = "#0d6efd";
+                            return;
+                        }
+
+                        generarExportDesdeBox(retryBox, canvasElement, networkOculta, boton, contenedorImagen);
+                    }, 150);
+
+                    return;
+                }
+
+                generarExportDesdeBox(box, canvasElement, networkOculta, boton, contenedorImagen);
+            };
+
+            networkOculta.once("afterDrawing", exportarDesdeNetwork);
         }
 
-        const estaAprobada = !!window.resultadosGlobales?.[mat.id];
-        const colorArea = coloresMapa[mat.id] || "#555555";
-
-        nodosArray.push({
-            id: mat.id,
-            label: mat.nombre,
-            level: cuatrimestreActual,
-            shape: "box",
-            color: {
-                background: estaAprobada ? colorArea : "#ffffff",
-                border: estaAprobada ? colorArea : "#aaaaaa"
-            },
-            font: {
-                color: estaAprobada ? "#ffffff" : "#333333",
-                face: "Segoe UI",
-                size: 14
-            },
-            borderWidth: estaAprobada ? 0 : 2
-        });
-    });
-
-    const edgesArray = flechasData.map(rel => {
-        const estaAprobada = !!window.resultadosGlobales?.[rel.from];
-        return {
-            from: rel.from,
-            to: rel.to,
-            arrows: "to",
-            color: {
-                color: rel.invisible
-                    ? "transparent"
-                    : (estaAprobada ? (coloresMapa[rel.from] || "#333") : "#cccccc"),
-                opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6)
-            },
-            width: rel.invisible ? 0 : (estaAprobada ? 3 : 1)
-        };
-    });
-
-    const options = {
-        layout: {
-            hierarchical: {
-                enabled: true,
-                direction: "LR",
-                levelSeparation: 280,
-                nodeSpacing: 70,
-                treeSpacing: 70,
-                blockShifting: true,
-                edgeMinimization: true,
-                parentCentralization: true
-            }
-        },
-        physics: { enabled: false },
-        edges: {
-            smooth: {
-                type: "cubicBezier",
-                forceDirection: "horizontal",
-                roundness: 0.5
-            }
-        }
-    };
-
-    const networkOculta = new vis.Network(
-        contenedorOculto,
-        { nodes: nodosArray, edges: edgesArray },
-        options
-    );
-
-    networkOculta.fit({
-        animation: false
-    });
-
-    networkOculta.once("afterDrawing", () => {
-    const canvasElement = contenedorOculto.querySelector("canvas");
-
-    if (!canvasElement) {
-        boton.disabled = false;
-        boton.innerText = "🔄 Intentar de nuevo";
-        boton.style.backgroundColor = "#0d6efd";
-        return;
-    }
-
-    let boundingBox = networkOculta.getBoundingBox();
-
-    if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
-        console.warn("Bounding box no disponible todavía.");
-        setTimeout(() => {
-            boundingBox = networkOculta.getBoundingBox();
-
-            if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
-                boton.disabled = false;
-                boton.innerText = "🔄 Intentar de nuevo";
-                boton.style.backgroundColor = "#0d6efd";
-                return;
-            }
-
-            const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-            const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
+        function generarExportDesdeBox(box, canvasElement, networkOculta, boton, contenedorImagen) {
+            const anchoReal = Math.abs(box.right - box.left) + 120;
+            const altoReal = Math.abs(box.bottom - box.top) + 120;
 
             const canvasTemp = document.createElement("canvas");
             canvasTemp.width = anchoReal;
@@ -611,82 +662,14 @@
 
                 networkOculta.destroy();
             }, "image/png");
-        }, 150);
-
-        return;
-    }
-
-    const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-    const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
-
-    const canvasTemp = document.createElement("canvas");
-    canvasTemp.width = anchoReal;
-    canvasTemp.height = altoReal;
-
-    const ctx = canvasTemp.getContext("2d");
-    ctx.fillStyle = "#fafafa";
-    ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-    const scale = networkOculta.getScale();
-    const pos = networkOculta.getViewPosition();
-
-    ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-    ctx.scale(scale, scale);
-    ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
-
-    const imgExportada = document.createElement("img");
-    imgExportada.style.width = "100%";
-    imgExportada.style.border = "3px solid #198754";
-    imgExportada.style.borderRadius = "8px";
-    imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
-
-    const mensaje = document.createElement("p");
-    mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
-    mensaje.style.fontWeight = "bold";
-    mensaje.style.color = "#198754";
-    mensaje.style.marginTop = "15px";
-
-    const linkDescarga = document.createElement("a");
-    linkDescarga.textContent = "⬇️ Descargar PNG";
-    linkDescarga.style.display = "inline-block";
-    linkDescarga.style.marginTop = "12px";
-    linkDescarga.style.fontWeight = "bold";
-    linkDescarga.style.color = "#0d6efd";
-    linkDescarga.style.textDecoration = "underline";
-    linkDescarga.style.cursor = "pointer";
-
-    canvasTemp.toBlob((blob) => {
-        if (!blob) {
-            boton.disabled = false;
-            boton.innerText = "🔄 Intentar de nuevo";
-            boton.style.backgroundColor = "#0d6efd";
-            return;
         }
-
-        const blobUrl = URL.createObjectURL(blob);
-        linkDescarga.href = blobUrl;
-        linkDescarga.download = "Mapa_Correlatividades_INEL.png";
-        imgExportada.src = blobUrl;
-
-        contenedorImagen.appendChild(mensaje);
-        contenedorImagen.appendChild(imgExportada);
-        contenedorImagen.appendChild(linkDescarga);
-
-        boton.innerText = "✅ Mapa listo";
-        boton.disabled = false;
-        boton.style.backgroundColor = "#198754";
-
-        networkOculta.destroy();
-    }, "image/png");
-});
-}
 
         window.addEventListener('load', calcular);
     </script>
 
     <!-- TESTIGO DE VERSIÓN -->
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.7.3
+        Versión: 1.7.4
     </div>
 </body>
 </html>
