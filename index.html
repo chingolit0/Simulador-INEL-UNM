@@ -447,16 +447,6 @@
     boton.style.backgroundColor = "#6c757d";
     contenedorImagen.innerHTML = "";
 
-    contenedorOculto.style.position = "fixed";
-    contenedorOculto.style.top = "0";
-    contenedorOculto.style.left = "0";
-    contenedorOculto.style.width = "2500px";
-    contenedorOculto.style.height = "1500px";
-    contenedorOculto.style.visibility = "visible";
-    contenedorOculto.style.opacity = "0";
-    contenedorOculto.style.pointerEvents = "none";
-    contenedorOculto.style.zIndex = "-1";
-
     const nodosArray = [];
     let cuatrimestreActual = 1;
 
@@ -531,6 +521,10 @@
         options
     );
 
+    networkOculta.fit({
+        animation: false
+    });
+
     networkOculta.once("afterDrawing", () => {
         const canvasElement = contenedorOculto.querySelector("canvas");
 
@@ -541,12 +535,93 @@
             return;
         }
 
-        const canvasTemp = document.createElement("canvas");
-        const boundingBox = networkOculta.getBoundingBox();
+        let boundingBox = networkOculta.getBoundingBox();
+
+        if (!boundingBox || typeof boundingBox.right === "undefined" || typeof boundingBox.left === "undefined") {
+            console.warn("Bounding box undefined, reintentando...");
+            setTimeout(() => {
+                boundingBox = networkOculta.getBoundingBox();
+
+                if (!boundingBox || typeof boundingBox.right === "undefined") {
+                    boton.disabled = false;
+                    boton.innerText = "🔄 Intentar de nuevo";
+                    boton.style.backgroundColor = "#0d6efd";
+                    return;
+                }
+
+                const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
+                const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
+
+                const canvasTemp = document.createElement("canvas");
+                canvasTemp.width = anchoReal;
+                canvasTemp.height = altoReal;
+
+                const ctx = canvasTemp.getContext("2d");
+                ctx.fillStyle = "#fafafa";
+                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+                const scale = networkOculta.getScale();
+                const pos = networkOculta.getViewPosition();
+
+                const canvasElement2 = contenedorOculto.querySelector("canvas");
+                if (canvasElement2) {
+                    ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
+                    ctx.scale(scale, scale);
+                    ctx.drawImage(canvasElement2, -canvasElement2.width / 2, -canvasElement2.height / 2);
+                }
+
+                const imgExportada = document.createElement("img");
+                imgExportada.style.width = "100%";
+                imgExportada.style.border = "3px solid #198754";
+                imgExportada.style.borderRadius = "8px";
+                imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+                const mensaje = document.createElement("p");
+                mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
+                mensaje.style.fontWeight = "bold";
+                mensaje.style.color = "#198754";
+                mensaje.style.marginTop = "15px";
+
+                const linkDescarga = document.createElement("a");
+                linkDescarga.textContent = "⬇️ Descargar PNG";
+                linkDescarga.style.display = "inline-block";
+                linkDescarga.style.marginTop = "12px";
+                linkDescarga.style.fontWeight = "bold";
+                linkDescarga.style.color = "#0d6efd";
+                linkDescarga.style.textDecoration = "underline";
+                linkDescarga.style.cursor = "pointer";
+
+                canvasTemp.toBlob((blob) => {
+                    if (!blob) {
+                        boton.disabled = false;
+                        boton.innerText = "🔄 Intentar de nuevo";
+                        boton.style.backgroundColor = "#0d6efd";
+                        return;
+                    }
+
+                    const blobUrl = URL.createObjectURL(blob);
+                    linkDescarga.href = blobUrl;
+                    linkDescarga.download = "Mapa_Correlatividades_INEL.png";
+                    imgExportada.src = blobUrl;
+
+                    contenedorImagen.appendChild(mensaje);
+                    contenedorImagen.appendChild(imgExportada);
+                    contenedorImagen.appendChild(linkDescarga);
+
+                    boton.innerText = "✅ Mapa listo";
+                    boton.disabled = false;
+                    boton.style.backgroundColor = "#198754";
+
+                    networkOculta.destroy();
+                }, "image/png");
+            }, 150);
+            return;
+        }
 
         const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
         const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
 
+        const canvasTemp = document.createElement("canvas");
         canvasTemp.width = anchoReal;
         canvasTemp.height = altoReal;
 
@@ -557,12 +632,12 @@
         const scale = networkOculta.getScale();
         const pos = networkOculta.getViewPosition();
 
-        ctx.translate(
-            canvasTemp.width / 2 - pos.x * scale,
-            canvasTemp.height / 2 - pos.y * scale
-        );
-        ctx.scale(scale, scale);
-        ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
+        const canvasElement2 = contenedorOculto.querySelector("canvas");
+        if (canvasElement2) {
+            ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
+            ctx.scale(scale, scale);
+            ctx.drawImage(canvasElement2, -canvasElement2.width / 2, -canvasElement2.height / 2);
+        }
 
         const imgExportada = document.createElement("img");
         imgExportada.style.width = "100%";
@@ -616,7 +691,7 @@
 
     <!-- TESTIGO DE VERSIÓN -->
     <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
-        Versión: 1.7.1
+        Versión: 1.7.2
     </div>
 </body>
 </html>
