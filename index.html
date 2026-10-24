@@ -439,162 +439,188 @@
         }
 
         function generarMapa() {
-            const boton = document.getElementById('btn-generar');
-            const contenedorOculto = document.getElementById('red-oculta');
-            const contenedorImagen = document.getElementById('contenedor-imagen');
+    const boton = document.getElementById('btn-generar');
+    const contenedorOculto = document.getElementById('red-oculta');
+    const contenedorImagen = document.getElementById('contenedor-imagen');
 
-            boton.innerText = '⏳ Dibujando mapa...';
-            boton.disabled = true;
-            boton.style.backgroundColor = '#6c757d';
-            contenedorImagen.innerHTML = '';
+    boton.innerText = "⏳ Dibujando mapa...";
+    boton.disabled = true;
+    boton.style.backgroundColor = "#6c757d";
+    contenedorImagen.innerHTML = "";
 
-            contenedorOculto.style.visibility = 'visible';
-            contenedorOculto.style.opacity = '0';
-            contenedorOculto.style.pointerEvents = 'none';
+    contenedorOculto.style.position = "fixed";
+    contenedorOculto.style.top = "0";
+    contenedorOculto.style.left = "0";
+    contenedorOculto.style.width = "2500px";
+    contenedorOculto.style.height = "1500px";
+    contenedorOculto.style.visibility = "visible";
+    contenedorOculto.style.opacity = "0";
+    contenedorOculto.style.pointerEvents = "none";
+    contenedorOculto.style.zIndex = "-1";
 
-            let nodosArray = [];
-            let cuatrimestreActual = 1;
+    const nodosArray = [];
+    let cuatrimestreActual = 1;
 
-            materias2027.forEach(mat => {
-                if (mat.separador) {
-                    cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
-                }
-
-                const estaAprobada = !!window.resultadosGlobales?.[mat.id];
-                const colorArea = coloresMapa[mat.id] || '#555555';
-
-                nodosArray.push({
-                    id: mat.id,
-                    label: mat.nombre,
-                    level: cuatrimestreActual,
-                    shape: 'box',
-                    color: {
-                        background: estaAprobada ? colorArea : '#ffffff',
-                        border: estaAprobada ? colorArea : '#aaaaaa'
-                    },
-                    font: {
-                        color: estaAprobada ? '#ffffff' : '#333333',
-                        face: 'Segoe UI',
-                        size: 14
-                    },
-                    borderWidth: estaAprobada ? 0 : 2
-                });
-            });
-
-            const edgesArray = flechasData.map(rel => {
-                const estaAprobada = !!window.resultadosGlobales?.[rel.from];
-                return {
-                    from: rel.from,
-                    to: rel.to,
-                    arrows: 'to',
-                    color: {
-                        color: rel.invisible ? 'transparent' : (estaAprobada ? (coloresMapa[rel.from] || '#333') : '#cccccc'),
-                        opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6)
-                    },
-                    width: rel.invisible ? 0 : (estaAprobada ? 3 : 1)
-                };
-            });
-
-            const options = {
-                layout: {
-                    hierarchical: {
-                        enabled: true,
-                        direction: 'LR',
-                        levelSeparation: 280,
-                        nodeSpacing: 70,
-                        treeSpacing: 70,
-                        blockShifting: true,
-                        edgeMinimization: true,
-                        parentCentralization: true
-                    }
-                },
-                physics: { enabled: false },
-                edges: {
-                    smooth: {
-                        type: 'cubicBezier',
-                        forceDirection: 'horizontal',
-                        roundness: 0.5
-                    }
-                }
-            };
-
-            const networkOculta = new vis.Network(contenedorOculto, { nodes: nodosArray, edges: edgesArray }, options);
-
-            networkOculta.once('afterDrawing', () => {
-                const canvasElement = contenedorOculto.querySelector('canvas');
-                if (!canvasElement) {
-                    boton.disabled = false;
-                    boton.innerText = '🔄 Intentar de nuevo';
-                    boton.style.backgroundColor = '#0d6efd';
-                    return;
-                }
-
-                const canvasTemp = document.createElement('canvas');
-                const boundingBox = networkOculta.getBoundingBox();
-                const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
-                const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
-
-                canvasTemp.width = anchoReal;
-                canvasTemp.height = altoReal;
-
-                const ctx = canvasTemp.getContext('2d');
-                ctx.fillStyle = '#fafafa';
-                ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
-
-                const scale = networkOculta.getScale();
-                const pos = networkOculta.getViewPosition();
-                ctx.translate(canvasTemp.width / 2 - pos.x * scale, canvasTemp.height / 2 - pos.y * scale);
-                ctx.scale(scale, scale);
-                ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
-
-                const imgExportada = document.createElement('img');
-                imgExportada.style.width = '100%';
-                imgExportada.style.border = '3px solid #198754';
-                imgExportada.style.borderRadius = '8px';
-                imgExportada.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-
-                const mensaje = document.createElement('p');
-                mensaje.innerText = '✅ Mapa listo. Hacé click en el botón de descarga para guardar la imagen.';
-                mensaje.style.fontWeight = 'bold';
-                mensaje.style.color = '#198754';
-                mensaje.style.marginTop = '15px';
-
-                const linkDescarga = document.createElement('a');
-                linkDescarga.textContent = '⬇️ Descargar PNG';
-                linkDescarga.style.display = 'inline-block';
-                linkDescarga.style.marginTop = '12px';
-                linkDescarga.style.fontWeight = 'bold';
-                linkDescarga.style.color = '#0d6efd';
-                linkDescarga.style.textDecoration = 'underline';
-                linkDescarga.style.cursor = 'pointer';
-
-                canvasTemp.toBlob((blob) => {
-                    if (!blob) {
-                        boton.disabled = false;
-                        boton.innerText = '🔄 Intentar de nuevo';
-                        boton.style.backgroundColor = '#0d6efd';
-                        return;
-                    }
-
-                    const blobUrl = URL.createObjectURL(blob);
-                    linkDescarga.href = blobUrl;
-                    linkDescarga.download = 'Mapa_Correlatividades_INEL.png';
-                    imgExportada.src = blobUrl;
-
-                    contenedorImagen.appendChild(mensaje);
-                    contenedorImagen.appendChild(imgExportada);
-                    contenedorImagen.appendChild(linkDescarga);
-
-                    boton.innerText = '✅ Mapa listo';
-                    boton.disabled = false;
-                    boton.style.backgroundColor = '#198754';
-
-                    networkOculta.destroy();
-                }, 'image/png');
-            });
+    materias2027.forEach(mat => {
+        if (mat.separador) {
+            cuatrimestreActual = parseInt(mat.separador.replace(/\D/g, '')) || cuatrimestreActual + 1;
         }
+
+        const estaAprobada = !!window.resultadosGlobales?.[mat.id];
+        const colorArea = coloresMapa[mat.id] || "#555555";
+
+        nodosArray.push({
+            id: mat.id,
+            label: mat.nombre,
+            level: cuatrimestreActual,
+            shape: "box",
+            color: {
+                background: estaAprobada ? colorArea : "#ffffff",
+                border: estaAprobada ? colorArea : "#aaaaaa"
+            },
+            font: {
+                color: estaAprobada ? "#ffffff" : "#333333",
+                face: "Segoe UI",
+                size: 14
+            },
+            borderWidth: estaAprobada ? 0 : 2
+        });
+    });
+
+    const edgesArray = flechasData.map(rel => {
+        const estaAprobada = !!window.resultadosGlobales?.[rel.from];
+        return {
+            from: rel.from,
+            to: rel.to,
+            arrows: "to",
+            color: {
+                color: rel.invisible
+                    ? "transparent"
+                    : (estaAprobada ? (coloresMapa[rel.from] || "#333") : "#cccccc"),
+                opacity: rel.invisible ? 0 : (estaAprobada ? 1 : 0.6)
+            },
+            width: rel.invisible ? 0 : (estaAprobada ? 3 : 1)
+        };
+    });
+
+    const options = {
+        layout: {
+            hierarchical: {
+                enabled: true,
+                direction: "LR",
+                levelSeparation: 280,
+                nodeSpacing: 70,
+                treeSpacing: 70,
+                blockShifting: true,
+                edgeMinimization: true,
+                parentCentralization: true
+            }
+        },
+        physics: { enabled: false },
+        edges: {
+            smooth: {
+                type: "cubicBezier",
+                forceDirection: "horizontal",
+                roundness: 0.5
+            }
+        }
+    };
+
+    const networkOculta = new vis.Network(
+        contenedorOculto,
+        { nodes: nodosArray, edges: edgesArray },
+        options
+    );
+
+    networkOculta.once("afterDrawing", () => {
+        const canvasElement = contenedorOculto.querySelector("canvas");
+
+        if (!canvasElement) {
+            boton.disabled = false;
+            boton.innerText = "🔄 Intentar de nuevo";
+            boton.style.backgroundColor = "#0d6efd";
+            return;
+        }
+
+        const canvasTemp = document.createElement("canvas");
+        const boundingBox = networkOculta.getBoundingBox();
+
+        const anchoReal = Math.abs(boundingBox.right - boundingBox.left) + 120;
+        const altoReal = Math.abs(boundingBox.bottom - boundingBox.top) + 120;
+
+        canvasTemp.width = anchoReal;
+        canvasTemp.height = altoReal;
+
+        const ctx = canvasTemp.getContext("2d");
+        ctx.fillStyle = "#fafafa";
+        ctx.fillRect(0, 0, canvasTemp.width, canvasTemp.height);
+
+        const scale = networkOculta.getScale();
+        const pos = networkOculta.getViewPosition();
+
+        ctx.translate(
+            canvasTemp.width / 2 - pos.x * scale,
+            canvasTemp.height / 2 - pos.y * scale
+        );
+        ctx.scale(scale, scale);
+        ctx.drawImage(canvasElement, -canvasElement.width / 2, -canvasElement.height / 2);
+
+        const imgExportada = document.createElement("img");
+        imgExportada.style.width = "100%";
+        imgExportada.style.border = "3px solid #198754";
+        imgExportada.style.borderRadius = "8px";
+        imgExportada.style.boxShadow = "0 4px 8px rgba(0,0,0,0.1)";
+
+        const mensaje = document.createElement("p");
+        mensaje.innerText = "✅ Mapa listo. Hacé click en el enlace para descargarlo.";
+        mensaje.style.fontWeight = "bold";
+        mensaje.style.color = "#198754";
+        mensaje.style.marginTop = "15px";
+
+        const linkDescarga = document.createElement("a");
+        linkDescarga.textContent = "⬇️ Descargar PNG";
+        linkDescarga.style.display = "inline-block";
+        linkDescarga.style.marginTop = "12px";
+        linkDescarga.style.fontWeight = "bold";
+        linkDescarga.style.color = "#0d6efd";
+        linkDescarga.style.textDecoration = "underline";
+        linkDescarga.style.cursor = "pointer";
+
+        canvasTemp.toBlob((blob) => {
+            if (!blob) {
+                boton.disabled = false;
+                boton.innerText = "🔄 Intentar de nuevo";
+                boton.style.backgroundColor = "#0d6efd";
+                return;
+            }
+
+            const blobUrl = URL.createObjectURL(blob);
+            linkDescarga.href = blobUrl;
+            linkDescarga.download = "Mapa_Correlatividades_INEL.png";
+            imgExportada.src = blobUrl;
+
+            contenedorImagen.appendChild(mensaje);
+            contenedorImagen.appendChild(imgExportada);
+            contenedorImagen.appendChild(linkDescarga);
+
+            boton.innerText = "✅ Mapa listo";
+            boton.disabled = false;
+            boton.style.backgroundColor = "#198754";
+
+            networkOculta.destroy();
+        }, "image/png");
+    });
+}
 
         window.addEventListener('load', calcular);
     </script>
+
+    <!-- TESTIGO DE VERSIÓN -->
+    <div style="text-align: center; margin-top: 40px; margin-bottom: 20px; color: #999; font-size: 0.85rem; font-family: monospace;">
+        Versión: 1.6.1
+    </div>
+
+</body>
+</html>
 </body>
 </html>
