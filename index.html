@@ -554,53 +554,42 @@
                 imgExportada.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
 
                 const mensaje = document.createElement('p');
-                mensaje.innerText = '✅ ¡Listo! Mantené apretada la imagen para guardarla en Fotos.';
+                mensaje.innerText = '✅ Mapa listo. Hacé click en el botón de descarga para guardar la imagen.';
                 mensaje.style.fontWeight = 'bold';
                 mensaje.style.color = '#198754';
                 mensaje.style.marginTop = '15px';
 
-                const fallbackLink = document.createElement('a');
-                fallbackLink.textContent = '⬇️ Descargar PNG';
-                fallbackLink.style.display = 'inline-block';
-                fallbackLink.style.marginTop = '12px';
-                fallbackLink.style.fontWeight = 'bold';
-                fallbackLink.style.color = '#0d6efd';
-                fallbackLink.style.textDecoration = 'underline';
+                const linkDescarga = document.createElement('a');
+                linkDescarga.textContent = '⬇️ Descargar PNG';
+                linkDescarga.style.display = 'inline-block';
+                linkDescarga.style.marginTop = '12px';
+                linkDescarga.style.fontWeight = 'bold';
+                linkDescarga.style.color = '#0d6efd';
+                linkDescarga.style.textDecoration = 'underline';
+                linkDescarga.style.cursor = 'pointer';
 
-                let downloadUrl = '';
-
-                const finalizeDownload = () => {
-                    if (downloadUrl) {
-                        imgExportada.src = downloadUrl;
+                canvasTemp.toBlob((blob) => {
+                    if (!blob) {
+                        boton.disabled = false;
+                        boton.innerText = '🔄 Intentar de nuevo';
+                        boton.style.backgroundColor = '#0d6efd';
+                        return;
                     }
+
+                    const blobUrl = URL.createObjectURL(blob);
+                    linkDescarga.href = blobUrl;
+                    linkDescarga.download = 'Mapa_Correlatividades_INEL.png';
+                    imgExportada.src = blobUrl;
 
                     contenedorImagen.appendChild(mensaje);
                     contenedorImagen.appendChild(imgExportada);
-                    contenedorImagen.appendChild(fallbackLink);
+                    contenedorImagen.appendChild(linkDescarga);
 
                     boton.innerText = '✅ Mapa listo';
                     boton.disabled = false;
                     boton.style.backgroundColor = '#198754';
+
                     networkOculta.destroy();
-                };
-
-                canvasTemp.toBlob((blob) => {
-                    if (blob) {
-                        downloadUrl = URL.createObjectURL(blob);
-                        fallbackLink.href = downloadUrl;
-                        fallbackLink.download = 'Mapa_Correlatividades_INEL.png';
-
-                        try {
-                            fallbackLink.click();
-                        } catch (error) {
-                            // El navegador bloquea la descarga automática; el usuario puede insistir manualmente con el link.
-                        }
-
-                        setTimeout(() => URL.revokeObjectURL(downloadUrl), 1500);
-                    }
-
-                    imgExportada.src = canvasTemp.toDataURL('image/png');
-                    finalizeDownload();
                 }, 'image/png');
             });
         }
